@@ -1,0 +1,733 @@
+﻿<!--
+	Copyright (c) DOT Consulting scrl. All rights reserved.
+	Licensed under the provided EULA. See EULA file in the solution root for full license information. 
+-->
+<UserControl x:Class="Dotc.MQExplorerPlus.Views.MessageListView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpf="http://schemas.dotconsulting.be/wpf/xaml"
+             xmlns:ctl="http://schemas.dotconsulting.be/wpf/xaml/Controls"
+             xmlns:avalon="http://schemas.xceed.com/wpf/xaml/avalondock"
+             xmlns:viewModels="clr-namespace:Dotc.MQExplorerPlus.Core.ViewModels;assembly=Dotc.MQExplorerPlus.Core"
+             xmlns:models="clr-namespace:Dotc.MQExplorerPlus.Core.Models;assembly=Dotc.MQExplorerPlus.Core"
+             xmlns:design="clr-namespace:Dotc.MQExplorerPlus.DesignTime"
+             xmlns:hexViewer="http://schemas.dotconsulting.be/wpf/xaml/Controls"
+             xmlns:views="clr-namespace:Dotc.MQExplorerPlus.Views"
+             xmlns:mvvm="clr-namespace:Dotc.Mvvm;assembly=Dotc.Mvvm"
+             xmlns:system="clr-namespace:System;assembly=mscorlib"
+             mc:Ignorable="d"
+             d:DesignHeight="600"
+             d:DesignWidth="1024"
+             d:DataContext="{d:DesignInstance viewModels:MessageListViewModel}">
+    <Grid>
+        <Grid  IsEnabled="{Binding Initialized}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*"
+                               MinHeight="100" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="*"
+                               MinHeight="200" />
+            </Grid.RowDefinitions>
+            <Border  Background="Transparent"
+                     BorderThickness="0"
+                     HorizontalAlignment="Stretch"
+                     VerticalAlignment="Stretch"
+                     Panel.ZIndex="100"
+                     Grid.RowSpan="5">
+                <Border.Style>
+                    <Style TargetType="Border">
+                        <!--<Setter Property="ForceCursor"
+                                Value="true" />-->
+                        <Setter Property="Visibility"
+                                Value="Collapsed" />
+                        <Style.Triggers>
+                            <DataTrigger  Binding="{Binding LocalBusy}"
+                                          Value="True">
+                                <DataTrigger.Setters>
+                                    <Setter Property="Cursor"
+                                            Value="Wait" />
+                                    <Setter Property="Visibility"
+                                            Value="Visible" />
+                                </DataTrigger.Setters>
+                            </DataTrigger>
+                        </Style.Triggers>
+                    </Style>
+                </Border.Style>
+                <Grid Visibility="{Binding Progress.IsRunningForLong, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Border Background="White"
+                            BorderBrush="Black"
+                            BorderThickness="1"
+                            Width="350"
+                            Height="120"
+                            Padding="10"
+                            Cursor="Arrow">
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="*" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <TextBlock Grid.Row="0"
+                                       Text="{Binding Progress.Title}"
+                                       TextWrapping="Wrap" />
+                            <ProgressBar x:Name="UxLongProgress"
+                                         Height="20"
+                                         Minimum="{Binding Progress.From, Mode=OneWay}"
+                                         Maximum="{Binding Progress.To, Mode=OneWay}"
+                                         Value="{Binding Progress.Current, Mode=OneWay}"
+                                         IsIndeterminate="{Binding Progress.IsIndeterminate, Mode=OneWay}"
+                                         Grid.Row="1" />
+                            <TextBlock TextAlignment="Center"
+                                       VerticalAlignment="Center"
+                                       Visibility="{Binding Progress.IsDeterminate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                       Grid.Row="1">
+                                <TextBlock.Text>
+                                    <MultiBinding StringFormat="{}{0}/{1}">
+                                        <Binding Path="Value"
+                                                 ElementName="UxLongProgress" />
+                                        <Binding Path="Maximum"
+                                                 ElementName="UxLongProgress" />
+                                    </MultiBinding>
+                                </TextBlock.Text></TextBlock>
+                            <Button Grid.Row="2"
+                                    Width="80"
+                                    HorizontalAlignment="Right"
+                                    Visibility="{Binding SupportActionCancellation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                                    Command="{Binding CancelRunningActionCommand}">Cancel</Button>
+                        </Grid>
+                    </Border>
+                </Grid>
+            </Border>
+            <Ribbon Grid.Row="0"
+                    Style="{StaticResource CustomRibbonStyle}">
+                <RibbonTab>
+                    <RibbonGroup Header="Browse / Search">
+                        <RibbonGroup.GroupSizeDefinitions>
+                            <RibbonGroupSizeDefinition IsCollapsed="False" />
+                        </RibbonGroup.GroupSizeDefinitions>
+                        <RibbonSplitButton Command="{Binding RefreshCommand}"
+                                           LargeImageSource="{StaticResource ReloadImageSource}"
+                                           Label="Apply"
+                                           LabelPosition="Header"
+                                           Width="55">
+                            <RibbonSplitMenuItem Header="Search queue from top (F5)"
+                                                 ImageSource="{StaticResource ReloadImageSource}"
+                                                 Command="{Binding RefreshCommand}" />
+                            <RibbonSplitMenuItem Header="Continue search from last found"
+                                                 ImageSource="{StaticResource ContinueImageSource}"
+                                                 Command="{Binding RefreshContinueCommand}" />
+                            <RibbonSplitMenuItem Header="Search in cache (last resultset)"
+                                                 ImageSource="{StaticResource FilteredObjectSource}"
+                                                 Command="{Binding SearchCommand}" />                        
+                        </RibbonSplitButton>
+                        <Grid>
+                            <StackPanel Orientation="Vertical">
+                                <TextBlock Margin="5 0">Limit:</TextBlock>
+                                <RibbonTextBox Label=""
+                                               TextBoxWidth="50"
+                                               Text="{Binding BrowseLimit, UpdateSourceTrigger=PropertyChanged, Converter={StaticResource EmptyStringToIntegerConverter}}" />
+                                <RibbonCheckBox Label="Multi-Thread"
+                                                Visibility="Collapsed"
+                                                IsChecked="{Binding MultiThreaded}" />
+                            </StackPanel>
+                        </Grid>
+                    </RibbonGroup>
+                    <RibbonGroup Header="Search Criteria"
+                                 LargeImageSource="{StaticResource FilteredObjectSource}">
+                        <RibbonGroup.GroupSizeDefinitions>
+                            <RibbonGroupSizeDefinition IsCollapsed="False" />
+                        </RibbonGroup.GroupSizeDefinitions>
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                                <ColumnDefinition Width="Auto" />
+                            </Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions>
+                                <RowDefinition Height="Auto" />
+                                <RowDefinition Height="Auto" />
+                            </Grid.RowDefinitions>
+                            <RibbonTextBox Grid.Column="0"
+                                           Grid.ColumnSpan="2"
+                                           Grid.Row="0"
+                                           TextBoxWidth="138"
+                                           Label="Text:"
+                                           Text="{Binding Filter.Pattern, Delay=200, UpdateSourceTrigger=PropertyChanged}" />
+                            <Label Grid.Column="0"
+                                   Grid.Row="1"
+                                   Margin="0 3 0 0">Put Date</Label>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1"
+                                        Grid.Column="1"
+                                        Margin="0 3 0 0">
+                                <Label Margin="0 0 3 0">From:</Label>
+                                <DatePicker Height="24" SelectedDate="{Binding Filter.PutTimestampFrom, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <StackPanel Orientation="Horizontal"
+                                        Grid.Row="1"
+                                        Grid.Column="2"
+                                        Grid.ColumnSpan="2"
+                                        Margin="0 3 0 0">
+                                <Label Margin="0 0 3 0">To:</Label>
+                                <DatePicker Height="24" SelectedDate="{Binding Filter.PutTimestampTo, Mode=OneWayToSource, UpdateSourceTrigger=PropertyChanged}" />
+                            </StackPanel>
+                            <RibbonComboBox Grid.Column="2"
+                                            Grid.ColumnSpan="2"
+                                            Grid.Row="0"
+                                            Margin="2 0"
+                                            SelectionBoxWidth="55"
+                                            Label="Priority:">
+                                <RibbonGallery MaxColumnCount="1"
+                                               SelectedValue="{Binding Filter.Priority, Mode=TwoWay}"
+                                               SelectedValuePath="Value">
+                                    <RibbonGalleryCategory  x:Name="UxPrioritiesList"
+                                                            DisplayMemberPath="Label" />
+                                </RibbonGallery>
+                            </RibbonComboBox>
+                            <!--<RibbonButton Grid.Column="4" Grid.RowSpan="2" Margin="5 0"
+                                          Command="{Binding SearchCommand}"
+                                          LargeImageSource="{StaticResource FilteredObjectSource}"
+                                          Label="Apply"
+                                          Width="50"></RibbonButton>-->
+                        </Grid>
+                    </RibbonGroup>
+                    <RibbonGroup Header="Selection">
+                        <RibbonGroup.GroupSizeDefinitions>
+                            <RibbonGroupSizeDefinition IsCollapsed="False" />
+                        </RibbonGroup.GroupSizeDefinitions>
+                        <Grid Width="60">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RibbonButton Grid.Row="0"
+                                          SmallImageSource="{StaticResource SelectAllImageSource}"
+                                          Label="All"
+                                          Command="{Binding SelectAllCommand}" />
+                            <RibbonButton Grid.Row="1"
+                                          SmallImageSource="{StaticResource SelectNoneImageSource}"
+                                          Label="None"
+                                          Command="{Binding SelectNoneCommand}" />
+                            <RibbonButton Grid.Row="2"
+                                          SmallImageSource="{StaticResource InvertSelectionImageSource}"
+                                          Label="Invert"
+                                          Command="{Binding InvertSelectionCommand}" />
+                        </Grid>
+                        <RibbonButton Label="Delete..."
+                                      LargeImageSource="{StaticResource DeleteMessageImageSource}"
+                                      Command="{Binding DeleteCommand}" />
+                        <RibbonButton Label="Forward..."
+                                      LargeImageSource="{StaticResource ForwardMessageImageSource}"
+                                      Command="{Binding ForwardCommand}" />
+                        <RibbonButton LargeImageSource="{StaticResource CsvExportImageSource}"
+                                      Label="Export..."
+                                      Command="{Binding ExportCommand}" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Content"
+                                 LargeImageSource="{StaticResource QueueImageSource}">
+                        <!--<RibbonGroup.GroupSizeDefinitions>
+                                <RibbonGroupSizeDefinition IsCollapsed="False" />
+                            </RibbonGroup.GroupSizeDefinitions>-->
+                        <RibbonMenuButton LargeImageSource="{StaticResource TrashcanImageSource}"
+                                          Label="Clear">
+                            <RibbonMenuItem Header="Delete Command"
+                                            Command="{Binding EmptyCommand}" />
+                            <RibbonMenuItem Header="Truncate Command"
+                                            Command="{Binding TruncateCommand}" />
+                        </RibbonMenuButton>
+                        <Grid Width="70">
+                            <Grid.RowDefinitions>
+                                <RowDefinition />
+                                <RowDefinition />
+                            </Grid.RowDefinitions>
+                            <RibbonButton Grid.Row="0"
+                                          SmallImageSource="{StaticResource LoadDumpImageSource}"
+                                          Label="Load..."
+                                          Command="{Binding LoadQueueCommand}" />
+                            <RibbonButton Grid.Row="1"
+                                          SmallImageSource="{StaticResource SaveDumpImageSource}"
+                                          Label="Unload..."
+                                          Command="{Binding UnloadQueueCommand}" />
+                        </Grid>
+                        <RibbonButton Label="Put Message"
+                                      LargeImageSource="{StaticResource PutMessageImageSource}"
+                                      Command="{Binding PutMessageCommand}" />
+                    </RibbonGroup>
+                    <RibbonGroup Header="Status"
+                                 LargeImageSource="{StaticResource ConnQImageSource}">
+                        <RibbonGroup.GroupSizeDefinitions>
+                            <RibbonGroupSizeDefinition IsCollapsed="True" />
+                        </RibbonGroup.GroupSizeDefinitions>
+                        <RibbonButton Label="Get Allow"
+                                      LargeImageSource="{StaticResource GetAllowImageSource}"
+                                      Command="{Binding SetGetAllowCommand}" />
+                        <RibbonButton Label="Get Inhibit"
+                                      LargeImageSource="{StaticResource GetInhibitImageSource}"
+                                      Command="{Binding SetGetInhibitCommand}" />
+                        <RibbonButton Label="Put Allow"
+                                      LargeImageSource="{StaticResource PutAllowImageSource}"
+                                      Command="{Binding SetPutAllowCommand}" />
+                        <RibbonButton Label="Put Inhibit"
+                                      LargeImageSource="{StaticResource PutInhibitImageSource}"
+                                      Command="{Binding SetPutInhibitCommand}" />
+                    </RibbonGroup>
+                </RibbonTab>
+            </Ribbon>
+            <Border Grid.Row="1"
+                    Background="LightYellow"
+                    BorderThickness="1"
+                    BorderBrush="Gray"
+                    Padding="4"
+                    Visibility="{Binding ResultsetFromCache, Converter={StaticResource BooleanToVisibilityConverter}}">
+                <TextBlock HorizontalAlignment="Center"
+                           Foreground="blue"
+                           Text="{Binding MemorySearchCache.Length, StringFormat='{}Resultset from in-memory cache containing {0} message(s). Press F5 (Refresh) to invalidate the cache.'}" />
+            </Border>
+            <ListView Grid.Row="2"
+                      Margin="0 0 0 2"
+                      ItemsSource="{Binding Messages}"
+                      PreviewKeyDown="ListView_PreviewKeyDown"
+                      SelectionMode="Extended"
+                      SelectedItem="{Binding CurrentMessage}"
+                      wpf:GridViewSort.AutoSort="True"
+                      VirtualizingStackPanel.IsVirtualizing="True"
+                      VirtualizingStackPanel.VirtualizationMode="Recycling">
+                <ListView.ItemContainerStyle>
+                    <Style TargetType="ListViewItem">
+                        <Setter Property="HorizontalContentAlignment"
+                                Value="Stretch" />
+                        <Setter Property="Height"
+                                Value="20" />
+                    </Style>
+                </ListView.ItemContainerStyle>
+                <ListView.View>
+                    <GridView AllowsColumnReorder="False">
+                        <ctl:FixedWidthGridViewColumn FixedWidth="30">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <CheckBox IsChecked="{Binding Selected}"
+                                              HorizontalAlignment="Center" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </ctl:FixedWidthGridViewColumn>
+                        <GridViewColumn Header="#"
+                                        Width="60"
+                                        wpf:GridViewSort.SortPropertyName="Index">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Right"
+                                               Text="{Binding Index, TargetNullValue='?'}">
+                                        <TextBlock.Style>
+                                            <Style TargetType="TextBlock">
+                                                <Style.Triggers>
+                                                    <DataTrigger Binding="{Binding Index}"
+                                                                 Value="{x:Null}">
+                                                        <Setter Property="Foreground"
+                                                                Value="Gray" />
+                                                        <Setter Property="TextAlignment"
+                                                                Value="Center" />
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </TextBlock.Style></TextBlock>
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <ctl:FixedWidthGridViewColumn Header="Put Timestamp"
+                                                      FixedWidth="150"
+                                                      DisplayMemberBinding="{Binding PutTimestamp, StringFormat={}{0:yyyy-MM-dd-HH.mm.ss.ffff}}"
+                                                      wpf:GridViewSort.SortPropertyName="PutTimestamp" />
+                        <GridViewColumn Header="Format"
+                                        Width="100"
+                                        wpf:GridViewSort.SortPropertyName="ExtendedProperties.Format">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding ExtendedProperties.Format}"
+                                               d:DataContext="{d:DesignInstance design:QueueInfoExtDesignTime}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <ctl:FixedWidthGridViewColumn Header="Priority"
+                                                      FixedWidth="50"
+                                                      wpf:GridViewSort.SortPropertyName="ExtendedProperties.Priority">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding ExtendedProperties.Priority}"
+                                               d:DataContext="{d:DesignInstance design:QueueInfoExtDesignTime}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </ctl:FixedWidthGridViewColumn>
+                        <GridViewColumn Header="Length"
+                                        Width="80"
+                                        wpf:GridViewSort.SortPropertyName="Length">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Right"
+                                               Text="{Binding Length}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+
+                        <GridViewColumn Header="CCSID"
+                                        Width="60"
+                                        wpf:GridViewSort.SortPropertyName="ExtendedProperties.CharacterSet">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding ExtendedProperties.CharacterSet}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Encoding"
+                                        Width="60"
+                                        wpf:GridViewSort.SortPropertyName="ExtendedProperties.Encoding">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding ExtendedProperties.Encoding}" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Preview"
+                                        Width="600"
+                                        wpf:GridViewSort.SortPropertyName="PreviewText">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock Text="{Binding PreviewText}"
+                                               FontFamily="Consolas" FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Correlation Id"
+                                        Width="150"
+                                        wpf:GridViewSort.SortPropertyName="CorrelationIdString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock  TextAlignment="Left"
+                                                Text="{Binding CorrelationIdString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Correlation Id (bytes)"
+                                        Width="370"
+                                        wpf:GridViewSort.SortPropertyName="CorrelationIdHexString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding CorrelationIdHexString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Group Id"
+                                        Width="150"
+                                        wpf:GridViewSort.SortPropertyName="GroupIdString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock  TextAlignment="Left"
+                                                Text="{Binding GroupIdString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn> 
+                        <GridViewColumn Header="Group Id (bytes)"
+                                        Width="370"
+                                        wpf:GridViewSort.SortPropertyName="GroupIdHexString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding GroupIdHexString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Logical Seq #"
+                                        wpf:GridViewSort.SortPropertyName="ExtendedProperties.LogicalSequenceNubmer">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding ExtendedProperties.LogicalSequenceNubmer}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Message Id"
+                                        Width="150"
+                                        wpf:GridViewSort.SortPropertyName="MessageIdString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Left"
+                                               Text="{Binding MessageIdString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                        <GridViewColumn Header="Message Id (bytes)"
+                                        Width="370"
+                                        wpf:GridViewSort.SortPropertyName="MessageIdHexString">
+                            <GridViewColumn.CellTemplate>
+                                <DataTemplate>
+                                    <TextBlock TextAlignment="Center"
+                                               Text="{Binding MessageIdHexString}"
+                                               FontFamily="Consolas"
+                                               FontSize="13" />
+                                </DataTemplate>
+                            </GridViewColumn.CellTemplate>
+                        </GridViewColumn>
+                    </GridView>
+                </ListView.View>
+            </ListView>
+            <GridSplitter Grid.Row="3"
+                          HorizontalAlignment="Stretch"
+                          Height="8" />
+            <avalon:DockingManager Grid.Row="4"
+                                   Margin="2"
+                                   AllowMixedOrientation="False"
+                                   AllowDrop="False"
+                                   ShowSystemMenu="False">
+                <avalon:DockingManager.Resources>
+                    <Style TargetType="{x:Type avalon:LayoutDocumentTabItem}">
+                        <Setter Property="Width"
+                                Value="60" />
+                    </Style>
+                </avalon:DockingManager.Resources>
+                <avalon:DockingManager.Theme>
+                    <avalon:MetroTheme />
+                </avalon:DockingManager.Theme>
+                <avalon:DockingManager.DocumentContextMenu>
+                    <ContextMenu Visibility="Hidden" />
+                </avalon:DockingManager.DocumentContextMenu>
+                <avalon:LayoutRoot>
+                    <avalon:LayoutPanel>
+                        <avalon:LayoutDocumentPaneGroup>
+                            <avalon:LayoutDocumentPane  CanRepositionItems="False">
+                                <avalon:LayoutDocument Title="Raw"
+                                                       CanClose="False"
+                                                       CanFloat="False">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="32" />
+                                        </Grid.RowDefinitions>
+                                        <Border Margin="2"
+                                                Grid.Row="0"
+                                                Background="#F7F7F7"
+                                                BorderThickness="1"
+                                                BorderBrush="#808080">
+                                            <ctl:SearchableTextBlock x:Name="SearchableTextControl"
+                                                                     Text="{Binding CurrentMessage.Text, Mode=OneWay}"
+                                                                     BorderThickness="0"
+                                                                     FontFamily="Consolas"
+                                                                     FontSize="13" />
+                                        </Border>
+                                        <Grid Grid.Row="1">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="Auto" />
+                                                <ColumnDefinition Width="*" />
+                                            </Grid.ColumnDefinitions>
+                                            <Label Grid.Column="0"
+                                                   Margin="2">Search:</Label>
+                                            <TextBox Grid.Column="1"
+                                                     Margin="2"
+                                                     Height="22"
+                                                     Width="150"
+                                                     Text="{Binding ElementName=SearchableTextControl, Path=SearchText, UpdateSourceTrigger=PropertyChanged, Delay=300}" />
+                                            <Button Height="18"
+                                                    Width="18"
+                                                    Margin="2"
+                                                    Grid.Column="2"
+                                                    Command="{Binding PreviousCommand, ElementName=SearchableTextControl}">
+                                                <Image Height="10"
+                                                       Source="{StaticResource PreviousImageSource}"
+                                                       Style="{StaticResource ImageEnabled}" />
+                                            </Button>
+                                            <Button Height="18"
+                                                    Width="18"
+                                                    Margin="2"
+                                                    Grid.Column="3"
+                                                    Command="{Binding NextCommand, ElementName=SearchableTextControl}">
+                                                <Image Height="10"
+                                                       Source="{StaticResource NextImageSource}"
+                                                       Style="{StaticResource ImageEnabled}" />
+                                            </Button>
+                                            <Border Grid.Column="4"
+                                                    HorizontalAlignment="right"
+                                                    Margin="2">
+                                                <Button Width="120"
+                                                        Height="22"
+                                                        Command="{Binding CopyRawDataToClipboardCommand}">Copy to clipboard</Button>
+                                            </Border>
+                                        </Grid>
+                                    </Grid>
+                                </avalon:LayoutDocument>
+                                <avalon:LayoutDocument Title="Hex"
+                                                       CanClose="False"
+                                                       CanFloat="False">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto" />
+                                            <RowDefinition />
+                                        </Grid.RowDefinitions>
+                                        <StackPanel Grid.Row="0"
+                                                    Orientation="Horizontal"></StackPanel>
+                                        <hexViewer:HexViewer Grid.Row="1" Data="{Binding CurrentMessage.Hex}" />
+                                    </Grid>
+                                </avalon:LayoutDocument>
+                                <avalon:LayoutDocument Title="XML"
+                                                       CanClose="False"
+                                                       CanFloat="False">
+                                    <ctl:XmlViewer Document="{Binding CurrentMessage.Xml}" />
+                                </avalon:LayoutDocument>
+                                <avalon:LayoutDocument Title="Json"
+                                                       CanClose="False"
+                                                       CanFloat="False">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="*" />
+                                            <RowDefinition Height="Auto" />
+                                        </Grid.RowDefinitions>
+                                        <ctl:JsonViewer x:Name="uxJsonViewer"
+                                                        RootToken="{Binding CurrentMessage.JsonToken}"
+                                                        BorderThickness="1"
+                                                        BorderBrush="Gray" />
+                                        <StackPanel Grid.Row="1"
+                                                    Orientation="Horizontal">
+                                            <Button Margin="2"
+                                                    Name="uxExpandAll"
+                                                    Click="uxExpandAll_Click">
+                                                <Image Height="14"
+                                                       Width="14"
+                                                       Source="{StaticResource ExpandImageSource}" />
+                                            </Button>
+                                            <Button Margin="2"
+                                                    Name="uxCollapseAll"
+                                                    Click="uxCollapseAll_Click">
+                                                <Image Height="14"
+                                                       Width="14"
+                                                       Source="{StaticResource CollapseImageSource}" />
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </avalon:LayoutDocument>
+                                <avalon:LayoutDocument Title="Parser"
+                                                       CanClose="False"
+                                                       CanFloat="False">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="2*"
+                                                              MinWidth="250" />
+                                            <ColumnDefinition Width="Auto" />
+                                        </Grid.ColumnDefinitions>
+                                        <views:ParsingResultView Margin="2"
+                                                                 Grid.Column="0"
+                                                                 ItemsSource="{Binding Parser.Result}" />
+                                        <Expander Grid.Column="1"
+                                                  IsExpanded="True"
+                                                  ExpandDirection="Left"
+                                                  HorizontalAlignment="Right">
+                                            <Expander.Header>
+                                                <TextBlock Text="Definition"
+                                                           RenderTransformOrigin="0.5,0.5"
+                                                           Margin="0"
+                                                           Width="Auto">
+                                                    <TextBlock.LayoutTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform ScaleX="1"
+                                                                            ScaleY="1" />
+                                                            <SkewTransform AngleX="0"
+                                                                           AngleY="0" />
+                                                            <RotateTransform Angle="90" />
+                                                            <TranslateTransform X="0"
+                                                                                Y="0" />
+                                                        </TransformGroup>
+                                                    </TextBlock.LayoutTransform>
+                                                    <TextBlock.RenderTransform>
+                                                        <TransformGroup>
+                                                            <ScaleTransform ScaleX="1"
+                                                                            ScaleY="1" />
+                                                            <SkewTransform AngleX="0"
+                                                                           AngleY="0" />
+                                                            <RotateTransform Angle="0" />
+                                                            <TranslateTransform X="0"
+                                                                                Y="0" />
+                                                        </TransformGroup>
+                                                    </TextBlock.RenderTransform></TextBlock>
+                                            </Expander.Header>
+                                            <Expander.Content>
+                                                <Grid>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="*"
+                                                                          MinWidth="5" />
+                                                        <ColumnDefinition Width="Auto"
+                                                                          MinWidth="300" />
+                                                    </Grid.ColumnDefinitions>
+                                                    <GridSplitter Grid.Column="0"
+                                                                  Width="5"
+                                                                  Background="LightGray"
+                                                                  ResizeDirection="Columns"
+                                                                  ResizeBehavior="CurrentAndNext" />
+                                                    <Grid Grid.Column="1">
+                                                        <Grid.RowDefinitions>
+                                                            <RowDefinition Height="Auto" />
+                                                            <RowDefinition Height="*" />
+                                                        </Grid.RowDefinitions>
+                                                        <Grid Grid.Row="0">
+                                                            <Grid.ColumnDefinitions>
+                                                                <ColumnDefinition Width="*" />
+                                                                <ColumnDefinition Width="Auto" />
+                                                            </Grid.ColumnDefinitions>
+                                                            <TextBox Height="20"
+                                                                     Margin="0 0 0 2"
+                                                                     IsReadOnly="True"
+                                                                     Grid.Column="0"
+                                                                     Text="{Binding ParserDefinitionFilename}"
+                                                                     TextWrapping="NoWrap" />
+                                                            <Button Grid.Column="1"
+                                                                    Margin="2 0 0 2"
+                                                                    Height="20"
+                                                                    Width="20"
+                                                                    Command="{Binding LoadParserConfigurationCommand}">
+                                                                <Button.Content>
+                                                                    <Image Width="16"
+                                                                           Height="16"
+                                                                           Source="{StaticResource OpenImageSource}" />
+                                                                </Button.Content>
+                                                            </Button>
+                                                        </Grid>
+                                                        <ctl:XmlViewer Grid.Row="1"
+                                                                       Document="{Binding ParserDefinitionDocument}" />
+                                                    </Grid>
+                                                </Grid>
+                                            </Expander.Content>
+                                        </Expander>
+                                    </Grid>
+                                </avalon:LayoutDocument>
+                            </avalon:LayoutDocumentPane>
+                        </avalon:LayoutDocumentPaneGroup>
+                    </avalon:LayoutPanel>
+                </avalon:LayoutRoot>
+            </avalon:DockingManager>
+        </Grid>
+        <ContentControl Content="{Binding Errors}"
+                        ContentTemplate="{StaticResource ErrorPanelTemplate}" />
+    </Grid>
+</UserControl>

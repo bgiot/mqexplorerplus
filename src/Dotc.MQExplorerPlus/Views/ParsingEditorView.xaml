@@ -1,0 +1,170 @@
+﻿<!--
+	Copyright (c) DOT Consulting scrl. All rights reserved.
+	Licensed under the provided EULA. See EULA file in the solution root for full license information. 
+-->
+<UserControl x:Class="Dotc.MQExplorerPlus.Views.ParsingEditorView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:local="clr-namespace:Dotc.MQExplorerPlus.Views"
+             xmlns:xmle="http://schemas.dotconsulting.be/wpf/xaml/Controls"
+             xmlns:viewModels="clr-namespace:Dotc.MQExplorerPlus.Core.ViewModels;assembly=Dotc.MQExplorerPlus.Core"
+             mc:Ignorable="d"
+             d:DesignHeight="500"
+             d:DesignWidth="700">
+    <Grid>
+        <Border  Background="Transparent"
+                 BorderThickness="0"
+                 HorizontalAlignment="Stretch"
+                 VerticalAlignment="Stretch"
+                 Panel.ZIndex="100">
+            <Border.Style>
+                <Style TargetType="Border">
+                    <Setter Property="ForceCursor"
+                            Value="true" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed" />
+                    <Style.Triggers>
+                        <DataTrigger  Binding="{Binding LocalBusy}"
+                                      Value="True">
+                            <DataTrigger.Setters>
+                                <Setter Property="Cursor"
+                                        Value="Wait" />
+                                <Setter Property="Visibility"
+                                        Value="Visible" />
+                            </DataTrigger.Setters>
+                        </DataTrigger>
+                    </Style.Triggers>
+                </Style>
+            </Border.Style>
+        </Border>
+        <Grid Margin="5"
+              d:DataContext="{d:DesignInstance viewModels:ParsingEditorViewModel}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="*"
+                               MinHeight="100" />
+                <RowDefinition Height="5" />
+                <RowDefinition Height="3*"
+                               MinHeight="300" />
+            </Grid.RowDefinitions>
+            <Grid Grid.Row="0"
+                  Margin="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+                <TextBlock Grid.Row="0"
+                           TextDecorations="Underline"
+                           Padding="3">Message Sample:</TextBlock>
+                <Grid Grid.Row="1">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Grid.Column="0"
+                             Text="{Binding SampleMessage, UpdateSourceTrigger=PropertyChanged}"
+                             VerticalScrollBarVisibility="Visible"
+                             TextWrapping="Wrap"
+                             AcceptsReturn="True" />
+                    <Button Width="70"
+                            Height="20"
+                            VerticalAlignment="Bottom"
+                            HorizontalAlignment="Right"
+                            Grid.Column="1"
+                            Command="{Binding Path=ParseCommand}"
+                            Margin="4 0 0 0">Try Parse</Button>
+                </Grid>
+            </Grid>
+            <GridSplitter Grid.Row="1"
+                          Height="5"
+                          HorizontalAlignment="Stretch" />
+            <Grid Grid.Row="2">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"
+                                      MinWidth="250" />
+                    <ColumnDefinition Width="5" />
+                    <ColumnDefinition Width="*"
+                                      MinWidth="250" />
+                </Grid.ColumnDefinitions>
+                <Grid Grid.Column="0"
+                      Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+                    <TextBlock TextDecorations="Underline"
+                               Grid.Row="0"
+                               Padding="3">Parsing Definition:</TextBlock>
+                    <xmle:XmlEditor Grid.Row="1"
+                                    x:Name="uxXmlEditor"
+                                    Document="{Binding ParserDefinitionDocument}" />
+                    <Grid Grid.Row="2">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="Auto" />
+                            <ColumnDefinition Width="Auto" />
+                        </Grid.ColumnDefinitions>
+                        <Button Width="60"
+                                HorizontalAlignment="Right"
+                                Grid.Column="0"
+                                Command="{Binding Path=LoadCommand}"
+                                Margin="4">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Height="16"
+                                           Width="16"
+                                           Source="{StaticResource OpenImageSource}" />
+                                    <TextBlock Margin="2 0"
+                                               Text="Load..." />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Width="60"
+                                HorizontalAlignment="Right"
+                                Grid.Column="1"
+                                Command="{Binding Path=SaveCommand}"
+                                Margin="4">
+                            <Button.Content>
+                                <StackPanel Orientation="Horizontal">
+                                    <Image Height="16"
+                                           Width="16"
+                                           Source="{StaticResource SaveImageSource}" />
+                                    <TextBlock Margin="2 0"
+                                               Text="Save..." />
+                                </StackPanel>
+                            </Button.Content>
+                        </Button>
+                        <Button Width="80"
+                                HorizontalAlignment="Right"
+                                Grid.Column="2"
+                                Click="uxCheckXml_OnClick"
+                                Margin="4">Check Syntax</Button>
+                    </Grid>
+                </Grid>
+                <GridSplitter Grid.Column="1"
+                              Width="5"
+                              HorizontalAlignment="Stretch" />
+                <Grid Grid.Column="2"
+                      Margin="3">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="13*" />
+                        <RowDefinition Height="3*" />
+                    </Grid.RowDefinitions>
+                    <TextBlock Grid.Row="0"
+                               TextDecorations="Underline"
+                               Padding="3">Parsing Result:</TextBlock>
+                    <local:ParsingResultView Grid.Row="1"
+                                             ItemsSource="{Binding ParsingResult}"
+                                             Grid.RowSpan="2" />
+                </Grid>
+            </Grid>
+        </Grid>
+        <ContentControl Content="{Binding Errors}"
+                        ContentTemplate="{StaticResource ErrorPanelTemplate}" />
+    </Grid>
+</UserControl>

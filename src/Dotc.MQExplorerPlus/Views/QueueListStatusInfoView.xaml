@@ -1,0 +1,84 @@
+﻿<!--
+	Copyright (c) DOT Consulting scrl. All rights reserved.
+	Licensed under the provided EULA. See EULA file in the solution root for full license information. 
+-->
+<UserControl x:Class="Dotc.MQExplorerPlus.Views.QueueListStatusInfoView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Dotc.MQExplorerPlus.Views"
+             xmlns:viewModels="clr-namespace:Dotc.MQExplorerPlus.Core.ViewModels;assembly=Dotc.MQExplorerPlus.Core"
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <StatusBar Padding="5 0"
+               Height="28"
+               d:DataContext="{d:DesignInstance Type=viewModels:QueueListStatusInfo}">
+        <StatusBarItem Width="140">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}{0} of {1} selected">
+                        <Binding Path="SelectedCount" />
+                        <Binding Path="TotalCount" />
+                    </MultiBinding>
+                </TextBlock.Text></TextBlock>
+        </StatusBarItem>
+        <Separator />
+        <StatusBarItem Width="130">
+            <TextBlock>
+                <TextBlock.Text>
+                    <MultiBinding StringFormat="{}Last update: {0:HH:mm:ss}">
+                        <Binding Path="LastUpdateTimestamp" />
+                    </MultiBinding>
+                </TextBlock.Text></TextBlock>
+        </StatusBarItem>
+        <Separator />
+        <StatusBarItem MinWidth="130"
+                       Width="Auto">
+            <TextBlock Text="{Binding ConnectionInformation}" />
+        </StatusBarItem>
+        <Separator />
+        <StatusBarItem>
+            <Grid>
+                <TextBlock Visibility="{Binding Countdown.IsOn, Converter={StaticResource BooleanToVisibilityConverter}}"
+                           Text="{Binding Countdown.CurrentCountdown, StringFormat='{}Auto refresh in {0} sec.'}" />
+                <Grid  Visibility="{Binding Progress.Active, Converter={StaticResource BooleanToVisibilityConverter}}">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition />
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <!--<Button   Grid.Column="0"
+                              Visibility="{Binding Parent.SupportActionCancellation, Converter={StaticResource BooleanToVisibilityConverter}}"
+                              Command="{Binding Parent.CancelRunningActionCommand}"
+                              Margin="0 0 5 0">
+                        <Button.Template>
+                            <ControlTemplate>
+                                <Image Source="{StaticResource CancelImageSource}" />
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>-->
+                    <ProgressBar x:Name="UxProgress"
+                                 Grid.Column="1"
+                                 Width="150"
+                                 Height="18"
+                                 Minimum="{Binding Progress.From, Mode=OneWay}"
+                                 Maximum="{Binding Progress.To, Mode=OneWay}"
+                                 Value="{Binding Progress.Current, Mode=OneWay}"
+                                 IsIndeterminate="{Binding Progress.IsIndeterminate, Mode=OneWay}" />
+                    <!--<TextBlock TextAlignment="Center"
+                               Grid.Column="1"
+                               Visibility="{Binding Progress.IsDeterminate, Mode=OneWay, Converter={StaticResource BooleanToVisibilityConverter}}">
+                        <TextBlock.Text>
+                            <MultiBinding StringFormat="{}{0}/{1}">
+                                <Binding Path="Value"
+                                         ElementName="UxProgress" />
+                                <Binding Path="Maximum"
+                                         ElementName="UxProgress" />
+                            </MultiBinding>
+                        </TextBlock.Text></TextBlock>-->
+                </Grid>
+            </Grid>
+        </StatusBarItem>
+        <StatusBarItem />
+    </StatusBar>
+</UserControl>

@@ -1,0 +1,219 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{58BAAA1B-5A98-4A98-9AB1-DC257885B084}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dotc.Wpf</RootNamespace>
+    <AssemblyName>Dotc.Wpf</AssemblyName>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+    <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\Infra.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Net45|AnyCPU'">
+    <OutputPath>bin\Net45\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Net46|AnyCPU'">
+    <OutputPath>bin\Net46\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <TargetFrameworkVersion>v4.6.2</TargetFrameworkVersion>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="ICSharpCode.AvalonEdit, Version=5.0.3.0, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
+      <HintPath>..\packages\AvalonEdit.5.0.4\lib\Net40\ICSharpCode.AvalonEdit.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=10.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.10.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="PresentationFramework.Aero" />
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows" />
+    <Reference Include="System.Windows.Presentation" />
+    <Reference Include="System.Xaml" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+    <Reference Include="WindowsBase" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DotAssemblyInfo.cs">
+      <Link>Properties\DotAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\InfraAssemblyInfo.cs">
+      <Link>Properties\InfraAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="BindingProxy.cs" />
+    <Compile Include="CommandReference.cs" />
+    <Compile Include="Controls\AnimatedGif.cs" />
+    <Compile Include="Controls\EnhancedTreeView\EnhancedTreeView.cs" />
+    <Compile Include="Controls\EnhancedTreeView\EnhancedTreeViewItem.cs" />
+    <Compile Include="Controls\HexViewer\Array16Bytes.cs" />
+    <Compile Include="Controls\HexViewer\ByteCharConverter.cs" />
+    <Compile Include="Controls\JsonViewer\JsonViewer.cs" />
+    <Compile Include="Controls\JsonViewer\TemplateSelectors\JPropertyDataTemplateSelector.cs" />
+    <Compile Include="Controls\JsonViewer\ValueConverters\JArrayLengthConverter.cs" />
+    <Compile Include="Controls\JsonViewer\ValueConverters\JPropertyTypeToColorConverter.cs" />
+    <Compile Include="Controls\JsonViewer\ValueConverters\JValueConverter.cs" />
+    <Compile Include="Controls\JsonViewer\ValueConverters\JValueTypeToColorConverter.cs" />
+    <Compile Include="Controls\SearchableTextBlock\RegexSearchStrategy.cs" />
+    <Compile Include="Controls\SearchableTextBlock\SearchableTextBlock.cs" />
+    <Compile Include="Controls\SearchableTextBlock\SearchResult.cs" />
+    <Compile Include="Controls\SearchableTextBlock\SearchResultBackgroundRenderer.cs" />
+    <Compile Include="Controls\TreeListView\TreeListView.cs" />
+    <Compile Include="Controls\TreeListView\TreeListViewConverter.cs" />
+    <Compile Include="Controls\TreeListView\TreeListViewExpander.cs" />
+    <Compile Include="Controls\TreeListView\TreeListViewItem.cs" />
+    <Compile Include="Controls\VisualTreeAssist.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\CodeCompletionBinding.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\CompletionContext.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\CustomCommands.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\ICompletionItem.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\ICompletionItemList.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\ICompletionListWindow.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\ICompletionWindow.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\QualifiedName.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\QualifiedNameCollection.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\SchemaDocumentation.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\SharpDevelopCompletionWindow.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\StringToVisibilityConverter.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlCodeCompletionBinding.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlCompletionItem.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlCompletionItemCollection.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlElementPath.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlElementPathsByNamespace.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlNamespace.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlNamespaceCollection.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlParser.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlSchemaCompletion.cs" />
+    <Compile Include="Controls\XmlEditor\CodeCompletion\XmlSchemaCompletionCollection.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\DomRegion.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\FoldingManagerAdapter.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\FoldingRegion.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\IFoldingManager.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\IXmlFoldParser.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\XmlCommentFold.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\XmlElementFold.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\XmlFoldingManager.cs" />
+    <Compile Include="Controls\XmlEditor\Folding\XmlFoldParser.cs" />
+    <Compile Include="Controls\XmlEditor\Formatting\DocumentUtilities.cs" />
+    <Compile Include="Controls\XmlEditor\Formatting\IFormattingStrategy.cs" />
+    <Compile Include="Controls\XmlEditor\Formatting\IndentationStrategyAdapter.cs" />
+    <Compile Include="Controls\XmlEditor\Formatting\XmlFormattingStrategy.cs" />
+    <Compile Include="Controls\XmlEditor\TextMarkerService.cs" />
+    <Compile Include="Controls\XmlEditor\XmlEditor.xaml.cs">
+      <DependentUpon>XmlEditor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DependencyObjectExtensions.cs" />
+    <Compile Include="Controls\FixedWidthGridViewColumn.cs" />
+    <Compile Include="FrameworkElementExtensions.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="GridViewSort.cs" />
+    <Compile Include="Controls\HexViewer\HexViewer.xaml.cs">
+      <DependentUpon>HexViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Controls\HexViewer\HexViewerModel.cs" />
+    <Compile Include="PasswordHelper.cs" />
+    <Compile Include="SelectTextOnFocus.cs" />
+    <Compile Include="Controls\XmlViewer.xaml.cs">
+      <DependentUpon>XmlViewer.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="UIDispatcher.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Page Include="Controls\HexViewer\HexViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Themes\JsonViewerResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\Themes\SearchableTextBlockResources.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Controls\Themes\TreeListViewResources.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\XmlEditor\XmlEditor.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Controls\XmlViewer.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="packages.config" />
+  </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\Dotc.Mvvm\Dotc.Mvvm.csproj">
+      <Project>{AAE57D58-CA38-49C5-8F3C-91859D79CC90}</Project>
+      <Name>Dotc.Mvvm</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

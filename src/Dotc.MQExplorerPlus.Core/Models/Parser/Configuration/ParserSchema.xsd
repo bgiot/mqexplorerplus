@@ -1,0 +1,130 @@
+﻿<xs:schema xmlns:xs="http://www.w3.org/2001/XMLSchema">
+
+  <xs:element name="parser">
+    <xs:complexType>
+      <xs:all>
+        <xs:element name="parts">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:element name="part" maxOccurs="unbounded" minOccurs="0">
+                <xs:complexType>
+                  <xs:choice maxOccurs="unbounded">
+                    <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+                    <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupForPartType" />
+                    <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+                  </xs:choice>
+                  <xs:attribute name="id" use="required" type="NonEmptyString" />
+                </xs:complexType>
+              </xs:element>
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="message">
+          <xs:complexType>
+            <xs:choice maxOccurs="unbounded">
+              <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+              <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupType" />
+              <xs:element name="switch" minOccurs="0" maxOccurs="unbounded" type="switchType" />
+              <xs:element name="loop" minOccurs="0" maxOccurs="unbounded" type="loopType" />
+              <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+              <xs:element name="partRef" minOccurs="0" maxOccurs="unbounded" type="partRefType" />
+            </xs:choice>
+          </xs:complexType>
+        </xs:element>
+      </xs:all>
+    </xs:complexType>
+  </xs:element>
+
+  <xs:simpleType name="NonEmptyString">
+    <xs:restriction base="xs:string">
+      <xs:minLength value="1"/>
+    </xs:restriction>
+  </xs:simpleType>
+
+  <xs:complexType name="fieldType">
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="length" type="xs:positiveInteger" use="required" />
+    <xs:attribute name="id" type="xs:string" use="optional" />
+  </xs:complexType>
+
+  <xs:complexType name="constType">
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="value" type="NonEmptyString" use="required" />
+  </xs:complexType>
+  
+  <xs:complexType name="partRefType">
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="partId" type="NonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="groupType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+      <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupType" />
+      <xs:element name="switch" minOccurs="0" maxOccurs="unbounded" type="switchType" />
+      <xs:element name="loop" minOccurs="0" maxOccurs="unbounded" type="loopType" />
+      <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+      <xs:element name="partRef" minOccurs="0" maxOccurs="unbounded" type="partRefType" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+  </xs:complexType>
+
+    <xs:complexType name="groupForPartType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+      <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupForPartType" />
+      <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+  </xs:complexType>
+  
+  <xs:complexType name="switchType">
+    <xs:choice>
+      <xs:element name="case" type="caseType" minOccurs="1" maxOccurs="unbounded" />
+      <xs:element name="else" type="elseType" minOccurs="1" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="on" type="NonEmptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="caseType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+      <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupType" />
+      <xs:element name="switch" minOccurs="0" maxOccurs="unbounded" type="switchType" />
+      <xs:element name="loop" minOccurs="0" maxOccurs="unbounded" type="loopType" />
+      <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+      <xs:element name="partRef" minOccurs="0" maxOccurs="unbounded" type="partRefType" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="when" type="NonEmptyString" use="required" />
+  </xs:complexType>
+
+  <xs:complexType name="elseType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+      <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupType" />
+      <xs:element name="switch" minOccurs="0" maxOccurs="unbounded" type="switchType" />
+      <xs:element name="loop" minOccurs="0" maxOccurs="unbounded" type="loopType" />
+      <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+      <xs:element name="partRef" minOccurs="0" maxOccurs="unbounded" type="partRefType" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+  </xs:complexType>
+
+  <xs:complexType name="loopType">
+    <xs:choice maxOccurs="unbounded">
+      <xs:element name="field" minOccurs="0" maxOccurs="unbounded" type="fieldType" />
+      <xs:element name="group" minOccurs="0" maxOccurs="unbounded" type="groupType" />
+      <xs:element name="switch" minOccurs="0" maxOccurs="unbounded" type="switchType" />
+      <xs:element name="loop" minOccurs="0" maxOccurs="unbounded" type="loopType" />
+      <xs:element name="const" minOccurs="0" maxOccurs="unbounded" type="constType" />
+      <xs:element name="partRef" minOccurs="0" maxOccurs="unbounded" type="partRefType" />
+    </xs:choice>
+    <xs:attribute name="label" type="NonEmptyString" use="required"/>
+    <xs:attribute name="from" type="NonEmptyString" use="required" />
+    <xs:attribute name="to" type="NonEmptyString" use="required" />
+    <xs:attribute name="step" type="NonEmptyString"/>
+  </xs:complexType>
+  
+</xs:schema>

@@ -1,0 +1,142 @@
+﻿<!--
+	Copyright (c) DOT Consulting scrl. All rights reserved.
+	Licensed under the provided EULA. See EULA file in the solution root for full license information. 
+-->
+<UserControl x:Class="Dotc.MQExplorerPlus.Views.OpenQueueManagerView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:wpf="http://schemas.dotconsulting.be/wpf/xaml"
+             xmlns:viewModels="clr-namespace:Dotc.MQExplorerPlus.Core.ViewModels;assembly=Dotc.MQExplorerPlus.Core"
+             mc:Ignorable="d"
+             d:DesignHeight="270"
+             d:DesignWidth="600"
+             d:DataContext="{d:DesignData viewModels:OpenQueueManagerViewModel}"
+             Height="270"
+             Focusable="True">
+    <Grid Margin="10">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="260" />
+            <ColumnDefinition Width="Auto" />
+        </Grid.ColumnDefinitions>
+        <Label Grid.Row="0">Queue manager name:</Label>
+        <TextBox Grid.Row="1"
+                 Name="UxStartFocusField"
+                 wpf:SelectTextOnFocus.Active="True"
+                 Text="{Binding QueueManagerName, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+        <StackPanel Grid.Row="2" Height="24"
+                    Orientation="Horizontal"
+                    Visibility="{Binding ShowObjectFilter, Converter={StaticResource BooleanToVisibilityConverter}}"
+                    VerticalAlignment="Center">
+            <RadioButton GroupName="filterGroup" VerticalAlignment="Center" IsChecked="{Binding FilterByPrefix}"
+                         Margin="10 0">Object name prefix</RadioButton>
+            <RadioButton GroupName="filterGroup" IsChecked="{Binding FilterByQueueNames}"
+                         VerticalAlignment="Center" ToolTip="Comma separated values"
+                         Margin="10 0">Static queue list</RadioButton>
+        </StackPanel>
+        <TextBox Grid.Row="3"
+                 Visibility="{Binding ShowObjectPrefixFilter, Converter={StaticResource BooleanToVisibilityConverter}}"
+                 Text="{Binding QueueNamePrefixFilter, UpdateSourceTrigger=PropertyChanged}"
+                 wpf:SelectTextOnFocus.Active="True" />
+        <Border Grid.Row="0"
+                Grid.RowSpan="6"
+                Margin="5"
+                Grid.Column="1"
+                Width="270"
+                Visibility="{Binding FilterByQueueNames, Converter={StaticResource BooleanToVisibilityConverter}, ConverterParameter=Collapsed}"
+                >
+            <GroupBox Header="Static queue list" Padding="2" DataContext="{Binding StaticQueueNames}">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="*" />
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+                    <TextBox Height="20"
+                             Text="{Binding NewEntry, UpdateSourceTrigger=PropertyChanged, Delay=1}">
+                        <TextBox.InputBindings>
+                            <KeyBinding Command="{Binding Path=Add}"
+                                        Key="Enter" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+                    <Button Grid.Column="1" Width="30" Height="18" Margin="2 0 0 0" Command="{Binding Add}">Add</Button>
+                    <ListView Grid.Row="1" Margin="0 4 0 0" SelectionMode="Single" ItemsSource="{Binding ListView}" SelectedItem="{Binding SelectedEntry}"></ListView>
+                    <StackPanel Grid.Row="1"
+                                Grid.Column="1"
+                                Margin="0 20 0 0"
+                                Orientation="Vertical">
+                        <Button Width="30"
+                                Height="18"
+                                Margin="2 0 0 0" Command="{Binding Delete}">Del</Button>
+                    </StackPanel>
+                </Grid>
+            </GroupBox>
+        </Border>
+        <GroupBox Margin="0 5"
+                  Padding="2"
+                  Grid.Row="4"
+                  Visibility="{Binding IsRemote, Converter={StaticResource BooleanToVisibilityConverter}}"
+                  Header="Connection details">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                </Grid.ColumnDefinitions>
+                <Grid.RowDefinitions>
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                    <RowDefinition />
+                </Grid.RowDefinitions>
+                <Label Grid.Row="0"
+                       Grid.Column="0">Host:</Label>
+                <Label Grid.Row="1"
+                       Grid.Column="0">Port:</Label>
+                <Label Grid.Row="2"
+                       Grid.Column="0">Channel:</Label>
+                <Label Grid.Row="3"
+                       Grid.Column="0">User Id:</Label>
+                <Label Grid.Row="4"
+                       Grid.Column="0">Password:</Label>
+                <TextBox Height="20"
+                         Grid.Row="0"
+                         Grid.Column="1"
+                         wpf:SelectTextOnFocus.Active="True"
+                         Text="{Binding RemoteConfig.Host, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Height="20"
+                         Grid.Row="1"
+                         Grid.Column="1"
+                         wpf:SelectTextOnFocus.Active="True"
+                         Text="{Binding RemoteConfig.Port, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Height="20"
+                         Grid.Row="2"
+                         Grid.Column="1"
+                         wpf:SelectTextOnFocus.Active="True"
+                         Text="{Binding RemoteConfig.Channel, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged}" />
+                <TextBox Height="20"
+                         Grid.Row="3"
+                         Grid.Column="1"
+                         wpf:SelectTextOnFocus.Active="True"
+                         Text="{Binding RemoteConfig.UserId, UpdateSourceTrigger=PropertyChanged}" />
+                <PasswordBox Height="20"
+                             Grid.Row="4"
+                             Grid.Column="1"
+                             wpf:PasswordHelper.BindPassword="True"
+                             wpf:PasswordHelper.BindablePassword="{Binding RemoteConfig.Password, ValidatesOnDataErrors=True, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}" />
+            </Grid>
+        </GroupBox>
+    </Grid>
+</UserControl>

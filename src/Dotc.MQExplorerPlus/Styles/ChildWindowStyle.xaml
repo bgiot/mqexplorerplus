@@ -1,0 +1,107 @@
+﻿<!--
+	Copyright (c) DOT Consulting scrl. All rights reserved.
+	Licensed under the provided EULA. See EULA file in the solution root for full license information. 
+-->
+<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:atk="http://schemas.xceed.com/wpf/xaml/toolkit">
+    <ControlTemplate TargetType="Button"
+                     x:Key="CustomCloseButtonTemplate">
+        <Grid>
+            <Border x:Name="PART_border"
+                    Background="Transparent" />
+            <Grid MaxHeight="9"
+                  MaxWidth="9">
+                <Path Stroke="Black"
+                      StrokeThickness="1.5"
+                      Stretch="None"
+                      Data="M0,0 L8,8 M0,8 L8,0" />
+            </Grid>
+        </Grid>
+        <ControlTemplate.Triggers>
+            <Trigger Property="IsMouseOver"
+                     Value="True">
+                <Setter TargetName="PART_border"
+                        Property="Background"
+                        Value="#FFF" />
+                <Setter TargetName="PART_border"
+                        Property="Opacity"
+                        Value="0.7" />
+            </Trigger>
+            <Trigger Property="IsPressed"
+                     Value="True">
+                <Setter TargetName="PART_border"
+                        Property="Background"
+                        Value="{StaticResource WindowBorderBrush}" />
+                <Setter TargetName="PART_border"
+                        Property="Opacity"
+                        Value="1" />
+                <Setter Property="Foreground"
+                        Value="#FFF" />
+            </Trigger>
+        </ControlTemplate.Triggers>
+    </ControlTemplate>
+    <Style TargetType="Button"
+           x:Key="CustomCloseButtonStyle">
+        <Setter Property="Template"
+                Value="{StaticResource CustomCloseButtonTemplate}" />
+        <Setter Property="Width"
+                Value="34" />
+        <Setter Property="Height"
+                Value="26" />
+    </Style>
+    <Style TargetType="{x:Type atk:ChildWindow}"
+           x:Key="ChildWindowCustomStyle">
+        <Setter Property="WindowStyle"
+                Value="SingleBorderWindow" />
+        <Setter Property="WindowBackground"
+                Value="{StaticResource TitleBarBackgroundBrush}" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="WindowBorderThickness"
+                Value="1" />
+        <Setter Property="WindowBorderBrush"
+                Value="{StaticResource WindowBorderBrush}" />
+        <Setter Property="CloseButtonStyle"
+                Value="{StaticResource CustomCloseButtonStyle}" />
+        <Setter Property="CaptionShadowBrush"
+                Value="{StaticResource TitleBarBackgroundBrush}" />
+    </Style>
+    <Style TargetType="{x:Type atk:MessageBox}"
+           x:Key="MessageBoxCustomStyle">
+        <Setter Property="WindowStyle"
+                Value="SingleBorderWindow" />
+        <Setter Property="WindowBackground"
+                Value="{StaticResource TitleBarBackgroundBrush}" />
+        <Setter Property="CaptionShadowBrush"
+                Value="{StaticResource TitleBarBackgroundBrush}" />
+        <Setter Property="BorderThickness"
+                Value="0" />
+        <Setter Property="WindowBorderThickness"
+                Value="1" />
+        <Setter Property="WindowBorderBrush"
+                Value="{StaticResource WindowBorderBrush}" />
+        <Setter Property="CloseButtonStyle"
+                Value="{StaticResource CustomCloseButtonStyle}" />
+        <Setter Property="OkButtonStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="IsDefault"
+                            Value="True" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="CancelButtonStyle">
+            <Setter.Value>
+                <Style TargetType="{x:Type Button}">
+                    <Setter Property="IsCancel"
+                            Value="True" />
+                </Style>
+            </Setter.Value>
+        </Setter>
+        <Setter Property="YesButtonContent"
+                Value="_Yes" />
+        <Setter Property="NoButtonContent"
+                Value="_No" />
+    </Style>
+</ResourceDictionary>

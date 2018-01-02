@@ -1,0 +1,98 @@
+﻿<UserControl x:Class="Dotc.Wpf.Controls.XmlViewer"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:xmlstack="clr-namespace:System.Xml;assembly=System.Xml"
+             mc:Ignorable="d"
+             d:DesignHeight="300"
+             d:DesignWidth="300"
+             d:DataContext="{d:DesignInstance xmlstack:XmlElement}">
+    <UserControl.Resources>
+        <SolidColorBrush Color="Blue"
+                         x:Key="XmlValueBrush" />
+        <SolidColorBrush Color="Red"
+                         x:Key="XmlAttributeBrush" />
+        <SolidColorBrush Color="DarkMagenta"
+                         x:Key="XmlTagBrush" />
+        <SolidColorBrush Color="Blue"
+                         x:Key="XmlMarkBrush" />
+        <DataTemplate x:Key="AttributeTemplate">
+            <StackPanel Orientation="Horizontal"
+                        Margin="3,0,0,0"
+                        HorizontalAlignment="Center">
+                <TextBlock Text="{Binding Path=Name}"
+                           Foreground="{StaticResource XmlAttributeBrush}" />
+                <TextBlock Text="=&quot;"
+                           Foreground="{StaticResource XmlMarkBrush}" />
+                <TextBlock Text="{Binding Path=Value}"
+                           Foreground="{StaticResource XmlValueBrush}" />
+                <TextBlock Text="&quot;"
+                           Foreground="{StaticResource XmlMarkBrush}" />
+            </StackPanel>
+        </DataTemplate>
+        <Style TargetType="TreeViewItem">
+            <Setter Property="IsExpanded"
+                    Value="True" />
+        </Style>
+        <HierarchicalDataTemplate x:Key="TreeViewTemplate"
+                                  ItemsSource="{Binding XPath=child::node()}">
+            <StackPanel Orientation="Horizontal"
+                        Margin="3,0,0,0"
+                        HorizontalAlignment="Center">
+                <TextBlock Text="&lt;"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource XmlMarkBrush}"
+                           x:Name="startTag" />
+                <TextBlock Text="{Binding Path=Name}"
+                           Margin="0"
+                           HorizontalAlignment="Center"
+                           x:Name="xmlTag"
+                           Foreground="{StaticResource XmlTagBrush}" />
+                <ItemsControl ItemTemplate="{StaticResource AttributeTemplate}"
+                              ItemsSource="{Binding Path=Attributes}"
+                              HorizontalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                </ItemsControl>
+                <TextBlock Text="&gt;"
+                           HorizontalAlignment="Center"
+                           Foreground="{StaticResource XmlMarkBrush}"
+                           x:Name="endTag" />
+            </StackPanel>
+            <HierarchicalDataTemplate.Triggers>
+                <DataTrigger Binding="{Binding NodeType}">
+                    <DataTrigger.Value>
+                        <xmlstack:XmlNodeType>Text</xmlstack:XmlNodeType>
+                    </DataTrigger.Value>
+                    <Setter Property="Text"
+                            Value="{Binding InnerText}"
+                            TargetName="xmlTag" />
+                    <Setter Property="Foreground"
+                            Value="Blue"
+                            TargetName="xmlTag" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed"
+                            TargetName="startTag" />
+                    <Setter Property="Visibility"
+                            Value="Collapsed"
+                            TargetName="endTag" />
+                </DataTrigger>
+                <DataTrigger Binding="{Binding HasChildNodes}"
+                             Value="False">
+                    <Setter Property="Text"
+                            Value="/&gt;"
+                            TargetName="endTag" />
+                </DataTrigger>
+            </HierarchicalDataTemplate.Triggers>
+        </HierarchicalDataTemplate>
+    </UserControl.Resources>
+    <Grid>
+        <TreeView 
+                  Name="XmlTree"
+                  ItemTemplate="{StaticResource TreeViewTemplate}" />
+    </Grid>
+</UserControl>
