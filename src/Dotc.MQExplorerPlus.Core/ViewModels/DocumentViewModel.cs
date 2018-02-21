@@ -145,9 +145,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             get { return !LocalBusy; }
         }
 
-        internal async Task ExecuteAsync(Action action)
+        internal Task ExecuteAsync(Action action)
         {
-            await ExecuteAsync((ct) => action(), false);
+            return ExecuteAsync((ct) => action(), false);
         }
 
 
