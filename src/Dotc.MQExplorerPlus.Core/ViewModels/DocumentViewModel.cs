@@ -151,36 +151,49 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         }
 
 
-        internal async Task ExecuteAsync(Action<CancellationToken> action, bool supportCancellation = true)
+        internal Task ExecuteAsync(Action<CancellationToken> action, bool supportCancellation = true)
         {
             bool ownerOfBusy = (LocalBusy == false);
 
-            Func<bool> guardedAction = () => { return ExecuteGuarded(() => action(_cancellationTokenSource.Token)); };
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
 
-            try
+            SupportActionCancellation = supportCancellation;
+
+            if (ownerOfBusy)
             {
-                bool result = false;
-
-                SupportActionCancellation = supportCancellation;
-
-                if (ownerOfBusy)
-                {
-                    LocalBusy = true;
-
-                    _cancellationTokenSource = new CancellationTokenSource();
-                }
-                result = await Task.Run(guardedAction).ConfigureAwait(false);
-
+                LocalBusy = true;
+                _cancellationTokenSource = new CancellationTokenSource();
             }
-            finally
+
+            Task.Run(() =>
             {
-
-                if (ownerOfBusy)
+                try
                 {
-                    _cancellationTokenSource = null;
-                    LocalBusy = false;
+                    var result = ExecuteGuarded(() => action(_cancellationTokenSource.Token)); ;
+                    if (_cancellationTokenSource.Token.IsCancellationRequested)
+                    {
+                        tcs.SetCanceled();
+                    }
+                    else
+                    {
+                        tcs.SetResult(result);
+                    }
                 }
-            }
+                catch(Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+                finally
+                {
+                    if (ownerOfBusy)
+                    {
+                        _cancellationTokenSource = null;
+                        LocalBusy = false;
+                    }
+                }
+            });
+
+            return tcs.Task;
 
         }
 
