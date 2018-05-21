@@ -16,17 +16,17 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
     public abstract class ModalViewModel : ViewModel
     {
-        protected ModalViewModel(IModalView view , IApplicationController appController)
+        protected ModalViewModel(IModalView view, IApplicationController appController)
             : base(view, appController)
         {
-            OkCommand = CreateCommand(DoOk, OkAllowed );
+            OkCommand = CreateCommand(DoOk, OkAllowed);
             CancelCommand = CreateCommand(DoCancel);
             Result = MessageBoxResult.None;
         }
 
         public virtual bool ShowDefaultButtons => true;
 
-        public MessageBoxResult Result {get; private set;}
+        public MessageBoxResult Result { get; private set; }
 
         private bool _isBusy;
 
@@ -45,22 +45,42 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             get { return !IsBusy; }
         }
 
-        protected async Task<bool> ExecuteGuardedAsync(Action action)
+        protected Task<bool> ExecuteGuardedAsync(Action action)
         {
+
+            TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
+
             IsBusy = true;
-            var result = await Task.Run(() =>
+
+            Task.Run(() =>
             {
-                return ExecuteGuarded(() =>
+                try
                 {
-                    App.ShellService.WithGlobalBusy(() =>
+                    var result = ExecuteGuarded(() =>
                     {
-                        action.Invoke();
+                        App.ShellService.WithGlobalBusy(() =>
+                        {
+                            action.Invoke();
+                        });
                     });
-                });
+                    tcs.SetResult(result);
+
+
+                }
+                catch (Exception ex)
+                {
+                    tcs.SetException(ex);
+                }
+                finally
+                {
+                    IsBusy = false;
+                    CommandManager.InvalidateRequerySuggested();
+
+                }
+
             });
-            IsBusy = false;
-            CommandManager.InvalidateRequerySuggested();
-            return result;
+
+            return tcs.Task;
         }
 
         protected virtual bool OkAllowed()
@@ -111,7 +131,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         { }
 
         public event EventHandler Closed;
-               
+
         public ICommand CancelCommand
         {
             get;
