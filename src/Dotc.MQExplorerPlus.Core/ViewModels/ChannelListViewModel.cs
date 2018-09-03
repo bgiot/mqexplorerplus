@@ -52,7 +52,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         private IQueueManager QM { get; set; }
         private IObjectProvider ObjectProvider { get; set; }
 
-        internal async Task InitializeAsync(IQueueManager qm, IObjectProvider objProvider)
+        internal Task InitializeAsync(IQueueManager qm, IObjectProvider objProvider)
         {
             if (qm == null) throw new ArgumentNullException(nameof(qm));
             if (objProvider == null) throw new ArgumentNullException(nameof(objProvider));
@@ -60,7 +60,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             QM = qm;
             ObjectProvider = objProvider;
 
-            await InitializeCoreAsync();
+            return InitializeCoreAsync();
 
         }
 

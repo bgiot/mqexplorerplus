@@ -161,12 +161,12 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
         public void StartInitialize(IQueue queue)
         {
+            if (queue == null) throw new ArgumentNullException(nameof(queue));
             var _ = InitializeAsync(queue);
         }
         private async Task InitializeAsync(IQueue queue)
         {
 
-            if (queue == null) throw new ArgumentNullException(nameof(queue));
             Queue = new QueueInfo(queue.NewConnection(), App.UserSettings);
 
             ((MessageListStatusInfo)StatusInfoViewModel).ConnectionInformation = queue.QueueManager.ConnectionInfo;
@@ -188,13 +188,13 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         private void BuildCommands()
         {
             RefreshCommand = new AwaitableRelayCommand(
-                async () => await RefreshAsync(false), () => Initialized && !HasErrors);
+                async () => await RefreshAsync(false), () => Initialized && !HasErrors && LocalIdle);
 
             RefreshContinueCommand = new AwaitableRelayCommand(
-                async () => await RefreshAsync(true), () => Initialized && !HasErrors && Messages.Count > 0);
+                async () => await RefreshAsync(true), () => Initialized && !HasErrors && Messages.Count > 0 && LocalIdle);
 
             SearchCommand = new AwaitableRelayCommand(
-                async () => await SearchAsync(), () => Initialized && !HasErrors && Messages.Count > 0);
+                async () => await SearchAsync(), () => Initialized && !HasErrors && Messages.Count > 0 && LocalIdle);
 
             SelectAllCommand = CreateCommand(
             () =>
