@@ -21,7 +21,7 @@ namespace Dotc.MQExplorerPlus.Views
         public ParsingEditorView()
         {
             InitializeComponent();
-            uxXmlEditor.CodeCompletion = new XmlCodeCompletionBinding("Dotc.MQExplorerPlus.Application.Models.Parser.Configuration.ParserSchema.xsd;Dotc.MQExplorerPlus.Application");
+            uxXmlEditor.CodeCompletion = new XmlCodeCompletionBinding("Dotc.MQExplorerPlus.Core.Models.Parser.Configuration.ParserSchema.xsd;Dotc.MQExplorerPlus.Core");
         }
 
         private void uxCheckXml_OnClick(object sender, RoutedEventArgs e)
