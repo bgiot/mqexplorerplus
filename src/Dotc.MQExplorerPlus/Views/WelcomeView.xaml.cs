@@ -6,6 +6,7 @@
 #endregion
 using System.ComponentModel.Composition;
 using System.Windows.Controls;
+using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Views;
 
 namespace Dotc.MQExplorerPlus.Views
@@ -20,6 +21,7 @@ namespace Dotc.MQExplorerPlus.Views
         public WelcomeView()
         {
             InitializeComponent();
+            uxTitle.Text = ApplicationInfo.ProductName;
         }
     }
 }

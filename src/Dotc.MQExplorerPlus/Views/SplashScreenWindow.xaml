@@ -31,7 +31,7 @@
                            Foreground="Purple"
                            FontFamily="Arial Rounded MT Bold"
                            LineHeight="18">
-                    <Run FontSize="18">MQ Explorer Plus</Run>
+                    <Run FontSize="18" x:Name="uxTitle"></Run>
                     <LineBreak />
                     <Run x:Name="uxVersionInfo"
                          FontSize="12" />

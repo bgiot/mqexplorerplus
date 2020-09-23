@@ -29,7 +29,7 @@
                            Foreground="Purple"
                            FontFamily="Arial Rounded MT Bold"
                            LineHeight="18">
-                    <Run FontSize="18">MQ Explorer Plus</Run>
+                    <Run FontSize="18" x:Name="uxTitle"></Run>
                     <LineBreak />
                     <Run FontSize="12" Text="{Binding Version, Mode=OneWay, StringFormat='{}Version {0}'}"/>
                 </TextBlock>

@@ -20,7 +20,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         public AboutViewModel(IAboutView view, IApplicationController appc)
             : base(view, appc)
         {
-            Title = "About MQ Explorer Plus";
+            Title = $"About {ProductName}";
         }
 
 

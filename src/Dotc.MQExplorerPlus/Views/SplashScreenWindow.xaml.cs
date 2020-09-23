@@ -32,6 +32,7 @@ namespace Dotc.MQExplorerPlus.Views
         {
             InitializeComponent();
             uxVersionInfo.Text = "Version " + ApplicationInfo.Version;
+            uxTitle.Text = ApplicationInfo.ProductName;
             uxProgress.IsIndeterminate = true;
         }
     }

@@ -28,7 +28,6 @@
     <Feature Id="ProductFeature" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ApplicationShortcut"/>
-      <ComponentRef Id="ProductLicenseFolder"/>
     </Feature>
 
     <UI>
@@ -38,7 +37,7 @@
           Event="DoAction"
           Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
     </UI>
-    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch MQ Explorer Plus" />
+    <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.ProductName)" />
     <Property Id="WixShellExecTarget" Value="[#MainExeFile]" />
     <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Dotc.MQExplorerPlus.TargetDir)EULA.rtf" />
@@ -71,17 +70,6 @@
         </Directory>
       </Directory>
 
-      <Directory Id="CommonAppDataFolder" Name="ComAppDt">
-        <Directory Id="AppDataCompanyFolder" Name="$(var.ProductCompany)">
-          <Directory Id="AppDataProductFolder" Name="$(var.ProductName)">
-            <Component Id="ProductLicenseFolder" Guid="5CF9C3B8-A406-4FAC-9D74-1A95FDD6E656" Permanent="yes">
-              <CreateFolder Directory="AppDataProductFolder">
-                <Permission User="Everyone" GenericAll="yes"/>
-              </CreateFolder>
-            </Component>
-          </Directory>
-        </Directory>
-      </Directory>
     </Directory>
 
   </Fragment>
@@ -108,13 +96,13 @@
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.DataGrid.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.Toolkit.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)ICSharpCode.AvalonEdit.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)NLog.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Newtonsoft.Json.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Windows.Interactivity.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Expression.Interactions.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Core.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Interfaces.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Linq.dll" />
