@@ -49,9 +49,7 @@ namespace Dotc.MQExplorerPlus.Views
         {
             if (e.Key == Key.Space)
             {
-                var lv = sender as ListView;
-
-                if (lv != null)
+                if (sender is ListView lv)
                 {
                     var items = lv.SelectedItems.Cast<SelectableItem>().ToArray();
 

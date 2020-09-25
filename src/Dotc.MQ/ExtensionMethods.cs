@@ -7,6 +7,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -61,7 +62,7 @@ namespace Dotc.MQ
             var sb = new StringBuilder();
             foreach (var b in data)
             {
-                sb.AppendFormat("{1}{0:X2}", b, addPrefix ? "0x" : "");
+                sb.AppendFormat(CultureInfo.InvariantCulture,  "{1}{0:X2}", b, addPrefix ? "0x" : "");
             }
             return sb.ToString();
         }

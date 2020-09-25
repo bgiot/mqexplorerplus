@@ -238,92 +238,82 @@ namespace Dotc.MQ.Websphere
             RefreshInfo();
         }
 
-        private List<WsQueueManager> _browseConnectionPool;
-
-        private void SetupBrowseConnectionPool()
-        {
-            if (_browseConnectionPool == null)
-            {
-                _browseConnectionPool = new List<WsQueueManager>();
-                _browseConnectionPool.Add(((WsQueueManager)QueueManager).Clone());
-            }
-        }
 
         public IEnumerable<IMessage> BrowseMessages(int numberOfMessages, CancellationToken ct, byte[] startingPointMessageId = null, IBrowseFilter filter = null, IProgress<int> progress = null)
         {
 
-            SetupBrowseConnectionPool();
+            MQQueue ibmQueue;
 
-            var workers = new List<Task>();
+            var browseOption = MQC.MQGMO_BROWSE_FIRST;
 
-            var pipeline = new BlockingCollection<WsMessage>();
-            var cts = new CancellationTokenSource();
-
-
-            Exception workerException = null;
-
-
-            var qm = _browseConnectionPool[0];
-            MQQueue q = qm.OpenQueueCore(this.Name, OpenQueueMode.ForBrowse);
-            workers.Add(Task.Run(() => BrowseMessagesWorker(pipeline, filter, cts.Token, q, startingPointMessageId)));
-
-
-            Task.WhenAll(workers)
-                .ContinueWith((t) =>
-                {
-                    pipeline.CompleteAdding(); // Inform that there are no more messages to read from the queue
-
-                    if (t.IsFaulted)
-                    {
-                        workerException = t.Exception.InnerException;
-                    }
-                });
-
-            List<WsMessage> yieldBuffer = new List<WsMessage>();
-            int count = 0;
-
-            while (!pipeline.IsCompleted)
+            try
             {
-                if (ct != CancellationToken.None && ct.IsCancellationRequested)
-                {
-                    cts.Cancel();
-                    break;
-                };
+                ibmQueue = OpenQueueCore(OpenQueueMode.ForBrowse);
 
-
-                WsMessage msg;
-                if (pipeline.TryTake(out msg, 100))
+                if (startingPointMessageId != null)
                 {
-                    count++;
-                    if (msg != null)
+                    if (SetBrowseCursorAtMessageId(ibmQueue, startingPointMessageId))
                     {
-                        yieldBuffer.Add(msg);
-
-                        msg.Index = count;
-                        yield return msg;
-
-                        numberOfMessages--;
-                        if (numberOfMessages == 0)
-                        {
-                            cts.Cancel();
-                            break;
-                        }
+                        browseOption = MQC.MQGMO_BROWSE_NEXT;
                     }
-
-                    progress.Report(count);
                 }
-
+            }
+            catch (MQException ibmEx)
+            {
+                throw ibmEx.ToMqException(AddExtraInfoToError);
             }
 
-            q?.Close();
+            int count = 0;
 
-            if (workerException != null)
+            var getMsgOpts = new MQGetMessageOptions()
             {
-                MQException ibmEx = workerException as MQException;
-                if (ibmEx != null)
-                    throw ibmEx.ToMqException(AddExtraInfoToError);
-                else
-                    throw workerException;
+                Options = MQC.MQGMO_FAIL_IF_QUIESCING | browseOption
+            };
+
+            try
+            {
+
+                while (!ct.IsCancellationRequested)
+                {
+                    var msg = new MQMessage();
+                    try
+                    {
+                        ibmQueue.Get(msg, getMsgOpts);
+                    }
+                    catch (MQException ibmEx)
+                    {
+                        if (ibmEx.ReasonCode == MQC.MQRC_NO_MSG_AVAILABLE)
+                        {
+                            break;
+                        }
+
+                        throw ibmEx.ToMqException(AddExtraInfoToError);
+                    }
+                    count++;
+                    var localMsg = new WsMessage(msg, this);
+                    if (filter == null || filter.IsMatch(localMsg))
+                    {
+
+                        progress?.Report(count);
+
+                        localMsg.Index = count;
+                        yield return localMsg;
+
+                    }
+
+                    numberOfMessages--;
+                    if (numberOfMessages == 0)
+                    {
+                        break;
+                    }
+
+                    getMsgOpts.Options = MQC.MQGMO_FAIL_IF_QUIESCING | MQC.MQGMO_BROWSE_NEXT;
+
+                }
+            }
+            finally
+            {
+                ibmQueue?.Close();
             }
         }
 
@@ -338,8 +328,10 @@ namespace Dotc.MQ.Websphere
             try
             {
                 getMsgOpts.MatchOptions = MQC.MQMO_MATCH_MSG_ID;
-                var msg = new MQMessage();
-                msg.MessageId = msgId;
+                var msg = new MQMessage
+                {
+                    MessageId = msgId
+                };
                 queue.Get(msg, getMsgOpts);
                 return true;
 
@@ -352,54 +344,6 @@ namespace Dotc.MQ.Websphere
             }
         }
 
-        private void BrowseMessagesWorker(BlockingCollection<WsMessage> output, IBrowseFilter filter, CancellationToken ct, MQQueue queue, byte[] startingPointMessageId)
-        {
-            var browseOption = MQC.MQGMO_BROWSE_FIRST;
-            if (startingPointMessageId != null)
-            {
-                if (SetBrowseCursorAtMessageId(queue, startingPointMessageId))
-                {
-                    browseOption = MQC.MQGMO_BROWSE_NEXT;
-                }
-            }
-
-            var getMsgOpts = new MQGetMessageOptions()
-            {
-                Options = MQC.MQGMO_FAIL_IF_QUIESCING | browseOption
-            };
-
-            try
-            {
-                while (!ct.IsCancellationRequested)
-                {
-                    var msg = new MQMessage();
-                    queue.Get(msg, getMsgOpts);
-
-                    var localMsg = new WsMessage(msg, this);
-                    if (filter == null || filter.IsMatch(localMsg))
-                    {
-                        output.Add(localMsg, ct);
-                    }
-                    else
-                    {
-                        output.Add(null, ct);
-                    }
-
-                    getMsgOpts.Options = MQC.MQGMO_FAIL_IF_QUIESCING | MQC.MQGMO_BROWSE_NEXT;
-
-                }
-            }
-            catch (OperationCanceledException)
-            {
-            }
-            catch (MQException ex)
-            {
-                if (ex.ReasonCode != MQC.MQRC_NO_MSG_AVAILABLE)
-                    throw;
-            }
-
-
-        }
         public void RefreshInfo()
         {
             try
@@ -572,8 +516,7 @@ namespace Dotc.MQ.Websphere
             {
                 if (extendedProperties.ContainsKey("CorrelationId"))
                 {
-                    var corrId = extendedProperties["CorrelationId"] as byte[];
-                    if (corrId != null && corrId.Length == 24)
+                    if (extendedProperties["CorrelationId"] is byte[] corrId && corrId.Length == 24)
                     {
                         // Fine we got a valid correlationid; set it
                         ibmMsg.CorrelationId = corrId;
@@ -582,14 +525,12 @@ namespace Dotc.MQ.Websphere
                 }
                 if (extendedProperties.ContainsKey("GroupId"))
                 {
-                    var grpId = extendedProperties["GroupId"] as byte[];
-                    if (grpId != null && grpId.Length == 24)
+                    if (extendedProperties["GroupId"] is byte[] grpId && grpId.Length == 24)
                     {
                         // Fine we got a valid groupid; set it
                         ibmMsg.GroupId = grpId;
-                        if (extendedProperties.ContainsKey("LogicalSequenceNumber") && extendedProperties["LogicalSequenceNumber"] is int)
+                        if (extendedProperties.ContainsKey("LogicalSequenceNumber") && extendedProperties["LogicalSequenceNumber"] is int lsn)
                         {
-                            int lsn = (int)extendedProperties["LogicalSequenceNumber"];
                             ibmMsg.MessageSequenceNumber = lsn;
                         }
 

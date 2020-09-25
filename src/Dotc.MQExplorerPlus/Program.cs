@@ -20,15 +20,14 @@ namespace Dotc.MQExplorerPlus
     {
         [STAThread]
         [LoaderOptimization(LoaderOptimization.MultiDomainHost)]
-        static void Main(string[] args)
+        static void Main()
         {
             // Read the main configuration file
             var xmlDoc = ReadConfiguration();
 
             // if MQ is installed, we need to inject in the configuration file
             // the necessary bindingredirect to use the amqmdnet installed in the GAC (even if older than the one ship with the tool)
-            string mqVersion;
-            bool mqInstalled = CheckMqInstalled(out mqVersion);
+            bool mqInstalled = CheckMqInstalled(out string mqVersion);
             if (mqInstalled)
             {
                 AddBindingRedirect(xmlDoc, mqVersion);
@@ -40,16 +39,16 @@ namespace Dotc.MQExplorerPlus
             setup.SetConfigurationBytes(Encoding.Default.GetBytes(config));
             var newdomain = AppDomain.CreateDomain("MQExplorerPlusWithRightAPI", new Evidence(), setup);
 
-            CrossAppDomainDelegate startupaction = () =>
-                {
-                    Thread thread = new Thread(() =>
-                       {
-                           App.Main();
-                       });
-                    thread.SetApartmentState(
-                       ApartmentState.STA);
-                    thread.Start();
-                };
+            void startupaction()
+            {
+                Thread thread = new Thread(() =>
+                   {
+                       App.Main();
+                   });
+                thread.SetApartmentState(
+                   ApartmentState.STA);
+                thread.Start();
+            }
 
             newdomain.DoCallBack(startupaction);
 
