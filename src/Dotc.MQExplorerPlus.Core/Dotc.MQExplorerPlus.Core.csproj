@@ -1,100 +1,30 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{287B10C6-E27D-4E64-B2AB-7EB97B1E66ED}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dotc.MQExplorerPlus.Core</RootNamespace>
-    <AssemblyName>Dotc.MQExplorerPlus.Core</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS;</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
-  </PropertyGroup>
-  <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
   </PropertyGroup>
   <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\MQ.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Management" />
-    <Reference Include="System.Reactive, Version=4.4.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.4.4.1\lib\net46\System.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Core.4.4.1\lib\net46\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Interfaces.4.4.1\lib\net46\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Linq.4.4.1\lib\net46\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.PlatformServices.4.4.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Windows.Threading.4.4.1\lib\net46\System.Reactive.Windows.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Xaml" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Data" />
-    <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Compile Include="..\DotAssemblyInfo.cs">
@@ -103,142 +33,12 @@
     <Compile Include="..\MQAssemblyInfo.Client.cs">
       <Link>Properties\MQAssemblyInfo.Client.cs</Link>
     </Compile>
-    <Compile Include="Models\DumpContext.cs" />
-    <Compile Include="Models\LabelValuePair.cs" />
-    <Compile Include="Models\ProgressActiveScope.cs" />
-    <Compile Include="ObservableProgress.cs" />
-    <Compile Include="CompositionHost.cs" />
-    <Compile Include="Controllers\ApplicationController.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="Models\ApplicationInfo.cs" />
-    <Compile Include="Models\AppSettings.cs" />
-    <Compile Include="Models\BrowseFilter.cs" />
-    <Compile Include="Models\ChannelInfo.cs" />
-    <Compile Include="Models\ChannelResetParameters.cs" />
-    <Compile Include="Models\ChannelResolveParameters.cs" />
-    <Compile Include="Models\ChannelStopParameters.cs" />
-    <Compile Include="Models\ListenerInfo.cs" />
-    <Compile Include="Models\Parser\Configuration\CaseCollection.cs" />
-    <Compile Include="Models\Parser\Configuration\CaseElement.cs" />
-    <Compile Include="Models\Parser\Configuration\ConstantElement.cs" />
-    <Compile Include="Models\Parser\Configuration\ElseElement.cs" />
-    <Compile Include="Models\Parser\Configuration\Extensions.cs" />
-    <Compile Include="Models\Parser\Configuration\FieldCollectionBase.cs" />
-    <Compile Include="Models\Parser\GroupResult.cs" />
-    <Compile Include="Models\Parser\Configuration\PartFieldCollection.cs" />
-    <Compile Include="Models\Parser\Configuration\PartRefElement.cs" />
-    <Compile Include="Models\Parser\Configuration\SwitchElement.cs" />
-    <Compile Include="Models\Parser\Configuration\ElementBase.cs" />
-    <Compile Include="Models\Parser\Configuration\FieldCollection.cs" />
-    <Compile Include="Models\Parser\Configuration\FieldElementBase.cs" />
-    <Compile Include="Models\Parser\Configuration\GroupElement.cs" />
-    <Compile Include="Models\Parser\Configuration\LoopElement.cs" />
-    <Compile Include="Models\Parser\Configuration\MessageElement.cs" />
-    <Compile Include="Models\Parser\Configuration\PartCollection.cs" />
-    <Compile Include="Models\Parser\Configuration\PartElement.cs" />
-    <Compile Include="Models\Parser\Configuration\ParserConfiguration.cs" />
-    <Compile Include="Models\Parser\Configuration\FieldElement.cs" />
-    <Compile Include="Models\Parser\ConstantResult.cs" />
-    <Compile Include="Models\Parser\FieldResult.cs" />
-    <Compile Include="Models\Parser\LoopResult.cs" />
-    <Compile Include="Models\Parser\ParserEngine.cs" />
-    <Compile Include="Models\Parser\ParserException.cs" />
-    <Compile Include="Models\Parser\ParsingContext.cs" />
-    <Compile Include="Models\Parser\ParsingResult.cs" />
-    <Compile Include="Models\Parser\ParsingResultNode.cs" />
-    <Compile Include="Models\Parser\ParsingResultNodeList.cs" />
-    <Compile Include="Models\Parser\StringReaderEx.cs" />
-    <Compile Include="Models\Parser\SwitchResult.cs" />
-    <Compile Include="Models\QueueDepthValidator.cs" />
-    <Compile Include="Models\QueueDepthWarningThresholdValidationAttribute.cs" />
-    <Compile Include="Models\RecentConnection.cs" />
-    <Compile Include="Models\RequiredIfAttribute.cs" />
-    <Compile Include="Models\UserSettings.cs" />
-    <Compile Include="ViewModels\ExportMessagesSettingsViewModel.cs" />
-    <Compile Include="Views\IExportMessagesSettingsView.cs" />
-    <Compile Include="MQExplorerPlusException.cs" />
-    <Compile Include="Services\CountdownService.cs" />
-    <Compile Include="Services\FileDialogResult.cs" />
-    <Compile Include="Services\FileType.cs" />
-    <Compile Include="Services\ISettingsProvider.cs" />
-    <Compile Include="Services\IFileDialogService.cs" />
-    <Compile Include="Services\IMessageService.cs" />
-    <Compile Include="Services\ISupportAutomaticRefresh.cs" />
-    <Compile Include="Services\IViewService.cs" />
-    <Compile Include="Models\MessageInfo.cs" />
-    <Compile Include="Models\QueueInfo.cs" />
-    <Compile Include="Models\RangeProgress.cs" />
-    <Compile Include="Models\SelectableItem.cs" />
-    <Compile Include="Models\SelectableItemCollection.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\IKeyboardCommands.cs" />
-    <Compile Include="Controllers\MQController.cs" />
-    <Compile Include="Services\ShellService.cs" />
-    <Compile Include="TraceHelper.cs" />
-    <Compile Include="ViewModels\ChannelListStatusInfo.cs" />
-    <Compile Include="ViewModels\ChannelListViewModel.cs" />
-    <Compile Include="ViewModels\ChannelResetParametersViewModel.cs" />
-    <Compile Include="ViewModels\ChannelResolveParametersViewModel.cs" />
-    <Compile Include="ViewModels\ChannelStopParametersViewModel.cs" />
-    <Compile Include="ViewModels\DumpCreationSettingsViewModel.cs" />
-    <Compile Include="ViewModels\DumpLoadSettingsViewModel.cs" />
-    <Compile Include="ViewModels\ErrorViewModel.cs" />
-    <Compile Include="ViewModels\ListenerListStatusInfo.cs" />
-    <Compile Include="ViewModels\ListenerListViewModel.cs" />
-    <Compile Include="ViewModels\MainViewModel.cs" />
-    <Compile Include="ViewModels\AboutViewModel.cs" />
-    <Compile Include="ViewModels\OpenQueueManagerViewModel.cs" />
-    <Compile Include="ViewModels\OpenQueueViewModel.cs" />
-    <Compile Include="ViewModels\ParsingEditorViewModel.cs" />
-    <Compile Include="ViewModels\ModalViewModel.cs" />
-    <Compile Include="ViewModels\PutMessageViewModel.cs" />
-    <Compile Include="ViewModels\MessageListViewModel.cs" />
-    <Compile Include="ViewModels\QueueListStatusInfo.cs" />
-    <Compile Include="ViewModels\QueueListViewModel.cs" />
-    <Compile Include="ViewModels\QueueManagerViewModel.cs" />
-    <Compile Include="ViewModels\SettingsViewModel.cs" />
-    <Compile Include="ViewModels\ShellViewModel.cs" />
-    <Compile Include="ViewModels\StatusInfoViewModel.cs" />
-    <Compile Include="ViewModels\DocumentViewModel.cs" />
-    <Compile Include="ViewModels\ViewModel.cs" />
-    <Compile Include="ViewModels\WelcomeViewModel.cs" />
-    <Compile Include="Views\IChannelResetParametersView.cs" />
-    <Compile Include="Views\IChannelResolveParametersView.cs" />
-    <Compile Include="Views\IChannelStopParametersView.cs" />
-    <Compile Include="Views\IDumpCreationSettingsView.cs" />
-    <Compile Include="Views\IDumpLoadSettingsView.cs" />
-    <Compile Include="Views\IMainView.cs" />
-    <Compile Include="Views\IOpenQueueManagerView.cs" />
-    <Compile Include="Views\IOpenQueueView.cs" />
-    <Compile Include="Views\IParsingEditorView.cs" />
-    <Compile Include="Views\IModalView.cs" />
-    <Compile Include="Views\IPutMessageView.cs" />
-    <Compile Include="Views\IMessageListView.cs" />
-    <Compile Include="Views\IQueueManagerView.cs" />
-    <Compile Include="Views\ISettingsView.cs" />
-    <Compile Include="Views\IShellView.cs" />
-    <Compile Include="Views\IDocumentView.cs" />
-    <Compile Include="Views\IView.cs" />
-    <Compile Include="Views\IAboutView.cs" />
-    <Compile Include="Views\IWelcomeView.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\Dotc.Common\Dotc.Common.csproj">
-      <Project>{8a198528-4367-4670-8f24-863404fa0a9c}</Project>
-      <Name>Dotc.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.MQ\Dotc.MQ.csproj">
-      <Project>{f567819e-199b-48ce-8ff9-cc1d803b3abb}</Project>
-      <Name>Dotc.MQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.Mvvm\Dotc.Mvvm.csproj">
-      <Project>{aae57d58-ca38-49c5-8f3c-91859d79cc90}</Project>
-      <Name>Dotc.Mvvm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.Wpf\Dotc.Wpf.csproj">
-      <Project>{58baaa1b-5a98-4a98-9ab1-dc257885b084}</Project>
-      <Name>Dotc.Wpf</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Dotc.Common\Dotc.Common.csproj" />
+    <ProjectReference Include="..\Dotc.MQ\Dotc.MQ.csproj" />
+    <ProjectReference Include="..\Dotc.Mvvm\Dotc.Mvvm.csproj" />
+    <ProjectReference Include="..\Dotc.Wpf\Dotc.Wpf.csproj" />
   </ItemGroup>
   <ItemGroup>
     <EmbeddedResource Include="Models\Parser\Configuration\ParserSchema.xsd">
@@ -249,16 +49,25 @@
     <None Include="..\mqep.licenseheader">
       <Link>mqep.licenseheader</Link>
     </None>
-    <None Include="app.config" />
-    <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Management" Version="4.7.0" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.0.1" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Core" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Linq" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.PlatformServices" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Windows.Threading" Version="4.4.1" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+  </ItemGroup>
 </Project>

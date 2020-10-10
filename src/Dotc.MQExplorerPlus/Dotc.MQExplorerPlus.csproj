@@ -1,48 +1,24 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
-<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+﻿<Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
   <PropertyGroup>
-    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3FC26AF2-9E09-48F2-8E3B-6214B037AEB0}</ProjectGuid>
+    <TargetFramework>net48</TargetFramework>
     <OutputType>WinExe</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>Dotc.MQExplorerPlus</RootNamespace>
-    <AssemblyName>Dotc.MQExplorerPlus</AssemblyName>
-    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
-    <FileAlignment>512</FileAlignment>
-    <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
-    <WarningLevel>4</WarningLevel>
     <AutoGenerateBindingRedirects>false</AutoGenerateBindingRedirects>
     <SccProjectName>SAK</SccProjectName>
     <SccLocalPath>SAK</SccLocalPath>
     <SccAuxPath>SAK</SccAuxPath>
     <SccProvider>SAK</SccProvider>
-    <TargetFrameworkProfile />
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
+    <UseWindowsForms>true</UseWindowsForms>
+    <UseWPF>true</UseWPF>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <OutputPath>bin\Debug\</OutputPath>
     <DefineConstants>TRACE;DEBUG;CODE_ANALYSIS</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
     <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
     <RunCodeAnalysis>false</RunCodeAnalysis>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>false</Prefer32Bit>
     <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
   </PropertyGroup>
   <PropertyGroup>
@@ -52,382 +28,25 @@
     <ApplicationIcon>Resources\Images\Sphere_grid_64.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup>
-    <SignAssembly>false</SignAssembly>
-  </PropertyGroup>
-  <PropertyGroup>
     <AssemblyOriginatorKeyFile>..\MQ.snk</AssemblyOriginatorKeyFile>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="amqmdnet, Version=9.0.0.0, Culture=neutral, PublicKeyToken=dd3cb1c9aae9ec97, processorArchitecture=MSIL">
-      <SpecificVersion>True</SpecificVersion>
-      <HintPath>..\..\libs\amqmdnet.dll</HintPath>
-    </Reference>
-    <Reference Include="ICSharpCode.AvalonEdit, Version=6.0.1.278, Culture=neutral, PublicKeyToken=9cc39be672370310, processorArchitecture=MSIL">
-      <HintPath>..\packages\AvalonEdit.6.0.1\lib\net45\ICSharpCode.AvalonEdit.dll</HintPath>
-    </Reference>
-    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=12.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.12.0.3\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.4\lib\net45\NLog.dll</HintPath>
-    </Reference>
-    <Reference Include="System" />
-    <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.Composition.registration" />
-    <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.configuration" />
-    <Reference Include="System.Data" />
     <Reference Include="System.IO.Compression" />
-    <Reference Include="System.Reactive, Version=4.4.0.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.4.4.1\lib\net46\System.Reactive.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Core, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Core.4.4.1\lib\net46\System.Reactive.Core.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Interfaces, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Interfaces.4.4.1\lib\net46\System.Reactive.Interfaces.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Linq, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Linq.4.4.1\lib\net46\System.Reactive.Linq.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.PlatformServices, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.PlatformServices.4.4.1\lib\net46\System.Reactive.PlatformServices.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reactive.Windows.Threading, Version=3.0.3000.0, Culture=neutral, PublicKeyToken=94bc3704cddfc263, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Reactive.Windows.Threading.4.4.1\lib\net46\System.Reactive.Windows.Threading.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Reflection.Context" />
-    <Reference Include="System.Runtime.CompilerServices.Unsafe, Version=4.0.6.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.4.7.1\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
-    <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
-    </Reference>
     <Reference Include="System.Transactions" />
-    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
-    </Reference>
     <Reference Include="System.Windows" />
-    <Reference Include="System.Windows.Controls.Ribbon" />
-    <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
-    </Reference>
-    <Reference Include="System.Xml" />
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="System.Core" />
-    <Reference Include="System.Xml.Linq" />
-    <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Xaml">
-      <RequiredTargetFramework>4.0</RequiredTargetFramework>
-    </Reference>
-    <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
-    <Reference Include="Xceed.Wpf.AvalonDock, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.2\lib\net40\Xceed.Wpf.AvalonDock.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Aero, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Aero.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.Metro, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.Metro.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.AvalonDock.Themes.VS2010, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.2\lib\net40\Xceed.Wpf.AvalonDock.Themes.VS2010.dll</HintPath>
-    </Reference>
-    <Reference Include="Xceed.Wpf.Toolkit, Version=3.8.0.0, Culture=neutral, PublicKeyToken=3e4669d2f30244f4, processorArchitecture=MSIL">
-      <HintPath>..\packages\Extended.Wpf.Toolkit.3.8.2\lib\net40\Xceed.Wpf.Toolkit.dll</HintPath>
-    </Reference>
   </ItemGroup>
   <ItemGroup>
-    <ApplicationDefinition Include="App.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </ApplicationDefinition>
     <Compile Include="..\DotAssemblyInfo.cs">
       <Link>Properties\DotAssemblyInfo.cs</Link>
     </Compile>
     <Compile Include="..\MQAssemblyInfo.Client.cs">
       <Link>Properties\MQAssemblyInfo.Client.cs</Link>
     </Compile>
-    <Compile Include="Behaviors\TextBoxInputRegExBehavior.cs" />
-    <Compile Include="Configuration\AppSettingsConfiguration.cs" />
-    <Compile Include="Converters\BytesToAsciiStringConverter.cs" />
-    <Compile Include="Converters\BytesToHexStringConverter.cs" />
-    <Compile Include="Converters\EnumBooleanConverter.cs" />
-    <Compile Include="SettingsProvider.cs" />
-    <Compile Include="Bootstrapper.cs" />
-    <Compile Include="Configuration\ConnectionConfigElement.cs" />
-    <Compile Include="Configuration\GeneralConfigElement.cs" />
-    <Compile Include="Configuration\MessagesConfigElement.cs" />
-    <Compile Include="Configuration\QueuesConfigElement.cs" />
-    <Compile Include="Configuration\RecentConnectionsConfigElement.cs" />
-    <Compile Include="Configuration\UserSettingsConfiguration.cs" />
-    <Compile Include="Converters\BooleanToChildWindowStateConverter.cs" />
-    <Compile Include="Converters\BooleanToIndoubtConverter.cs" />
-    <Compile Include="Converters\CheckQueueDepthTresholdConverter.cs" />
-    <Compile Include="Converters\EmptyStringToBooleanConverter.cs" />
-    <Compile Include="Converters\EmptyStringToIntegerConverter.cs" />
-    <Compile Include="Converters\PutMessageModeConverter.cs" />
-    <Compile Include="Converters\QueueManagerActiveContentConverter.cs" />
-    <Compile Include="Converters\WsChannelTypeNameConverter.cs" />
-    <Compile Include="Converters\WSQueueTypeNameConverter.cs" />
-    <Compile Include="DesignTime\ErrorViewModelDesignTime.cs" />
-    <Compile Include="DesignTime\QueueInfoExtDesignTime.cs" />
-    <Compile Include="FileDialogService.cs" />
-    <Compile Include="GlobalSuppressions.cs" />
-    <Compile Include="MessageService.cs" />
-    <Compile Include="Program.cs" />
-    <Compile Include="SplashScreenManager.cs" />
-    <Compile Include="Styles\RibbonStyle.xaml.cs">
-      <DependentUpon>RibbonStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Styles\WindowStyle.xaml.cs">
-      <DependentUpon>WindowStyle.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="ViewService.cs" />
-    <Compile Include="Views\AboutView.xaml.cs">
-      <DependentUpon>AboutView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChannelListStatusInfoView.xaml.cs">
-      <DependentUpon>ChannelListStatusInfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChannelListView.xaml.cs">
-      <DependentUpon>ChannelListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChannelResetParametersView.xaml.cs">
-      <DependentUpon>ChannelResetParametersView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChannelResolveParametersView.xaml.cs">
-      <DependentUpon>ChannelResolveParametersView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ChannelStopParametersView.xaml.cs">
-      <DependentUpon>ChannelStopParametersView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DumpCreationSettingsView.xaml.cs">
-      <DependentUpon>DumpCreationSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\DumpLoadSettingsView.xaml.cs">
-      <DependentUpon>DumpLoadSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ErrorPanelView.xaml.cs">
-      <DependentUpon>ErrorPanelView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ExportMessagesSettingsView.xaml.cs">
-      <DependentUpon>ExportMessagesSettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ListenerListStatusInfoView.xaml.cs">
-      <DependentUpon>ListenerListStatusInfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ListenerListView.xaml.cs">
-      <DependentUpon>ListenerListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MessageListStatusInfoView.xaml.cs">
-      <DependentUpon>MessageListStatusInfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\OpenQueueManagerView.xaml.cs">
-      <DependentUpon>OpenQueueManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MainView.xaml.cs">
-      <DependentUpon>MainView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\OpenQueueView.xaml.cs">
-      <DependentUpon>OpenQueueView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ParsingEditorView.xaml.cs">
-      <DependentUpon>ParsingEditorView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ParsingResultView.xaml.cs">
-      <DependentUpon>ParsingResultView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\PutMessageView.xaml.cs">
-      <DependentUpon>PutMessageView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\QueueListStatusInfoView.xaml.cs">
-      <DependentUpon>QueueListStatusInfoView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\QueueListView.xaml.cs">
-      <DependentUpon>QueueListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\MessageListView.xaml.cs">
-      <DependentUpon>MessageListView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\QueueManagerView.xaml.cs">
-      <DependentUpon>QueueManagerView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\SettingsView.xaml.cs">
-      <DependentUpon>SettingsView.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\ShellWindow.xaml.cs">
-      <DependentUpon>ShellWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="App.xaml.cs">
-      <DependentUpon>App.xaml</DependentUpon>
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Views\SplashScreenWindow.xaml.cs">
-      <DependentUpon>SplashScreenWindow.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="Views\WelcomeView.xaml.cs">
-      <DependentUpon>WelcomeView.xaml</DependentUpon>
-    </Compile>
-    <Page Include="Resources\ApplicationResources.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Resources\ImageResources.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Styles\Generic.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\ChildWindowStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\RibbonStyle.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Styles\WindowStyle.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\AboutView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChannelListStatusInfoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChannelListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChannelResetParametersView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChannelResolveParametersView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ChannelStopParametersView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DumpCreationSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\DumpLoadSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ErrorPanelView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ExportMessagesSettingsView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ListenerListStatusInfoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ListenerListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MessageListStatusInfoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\OpenQueueManagerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MainView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\OpenQueueView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ParsingEditorView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\ParsingResultView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\PutMessageView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\QueueListStatusInfoView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\QueueListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\MessageListView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\QueueManagerView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\SettingsView.xaml">
-      <Generator>MSBuild:Compile</Generator>
-      <SubType>Designer</SubType>
-    </Page>
-    <Page Include="Views\ShellWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\SplashScreenWindow.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="Views\WelcomeView.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Properties\AssemblyInfo.cs">
-      <SubType>Code</SubType>
-    </Compile>
-    <Compile Include="Properties\Resources.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DesignTime>True</DesignTime>
-      <DependentUpon>Resources.resx</DependentUpon>
-    </Compile>
-    <Compile Include="Properties\Settings.Designer.cs">
-      <AutoGen>True</AutoGen>
-      <DependentUpon>Settings.settings</DependentUpon>
-      <DesignTimeSharedInput>True</DesignTimeSharedInput>
-    </Compile>
-    <EmbeddedResource Include="Properties\Resources.resx">
-      <Generator>ResXFileCodeGenerator</Generator>
-      <LastGenOutput>Resources.Designer.cs</LastGenOutput>
-    </EmbeddedResource>
     <None Include="..\..\EULA.rtf">
       <Link>EULA.rtf</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -435,41 +54,15 @@
     <None Include="..\mqep.licenseheader">
       <Link>mqep.licenseheader</Link>
     </None>
-    <None Include="packages.config" />
-    <None Include="Properties\Settings.settings">
-      <Generator>SettingsSingleFileGenerator</Generator>
-      <LastGenOutput>Settings.Designer.cs</LastGenOutput>
-    </None>
     <AppDesigner Include="Properties\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="App.config" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Dotc.Common\Dotc.Common.csproj">
-      <Project>{8a198528-4367-4670-8f24-863404fa0a9c}</Project>
-      <Name>Dotc.Common</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.MQ.Websphere\Dotc.MQ.Websphere.csproj">
-      <Project>{4e9223b9-1bc2-45ea-97e0-ba0e1d7a1961}</Project>
-      <Name>Dotc.MQ.Websphere</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.MQExplorerPlus.Core\Dotc.MQExplorerPlus.Core.csproj">
-      <Project>{287b10c6-e27d-4e64-b2ab-7eb97b1e66ed}</Project>
-      <Name>Dotc.MQExplorerPlus.Core</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.MQ\Dotc.MQ.csproj">
-      <Project>{f567819e-199b-48ce-8ff9-cc1d803b3abb}</Project>
-      <Name>Dotc.MQ</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.Mvvm\Dotc.Mvvm.csproj">
-      <Project>{aae57d58-ca38-49c5-8f3c-91859d79cc90}</Project>
-      <Name>Dotc.Mvvm</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Dotc.Wpf\Dotc.Wpf.csproj">
-      <Project>{58baaa1b-5a98-4a98-9ab1-dc257885b084}</Project>
-      <Name>Dotc.Wpf</Name>
-    </ProjectReference>
+    <ProjectReference Include="..\Dotc.Common\Dotc.Common.csproj" />
+    <ProjectReference Include="..\Dotc.MQ.Websphere\Dotc.MQ.Websphere.csproj" />
+    <ProjectReference Include="..\Dotc.MQExplorerPlus.Core\Dotc.MQExplorerPlus.Core.csproj" />
+    <ProjectReference Include="..\Dotc.MQ\Dotc.MQ.csproj" />
+    <ProjectReference Include="..\Dotc.Mvvm\Dotc.Mvvm.csproj" />
+    <ProjectReference Include="..\Dotc.Wpf\Dotc.Wpf.csproj" />
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Images\Bold.png" />
@@ -650,12 +243,25 @@
   <ItemGroup>
     <Resource Include="Resources\Images\sort-down.png" />
   </ItemGroup>
-  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
-  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
-       Other similar extension points exist, see Microsoft.Common.targets.
-  <Target Name="BeforeBuild">
-  </Target>
-  <Target Name="AfterBuild">
-  </Target>
-  -->
+  <ItemGroup>
+    <PackageReference Include="AvalonEdit" Version="6.0.1" />
+    <PackageReference Include="Extended.Wpf.Toolkit" Version="3.8.2" />
+    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.3" />
+    <PackageReference Include="NLog" Version="4.7.4" />
+    <PackageReference Include="System.ComponentModel.Annotations" Version="4.7.0" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="4.7.0" />
+    <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
+    <PackageReference Include="System.Reactive" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Core" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Interfaces" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Linq" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.PlatformServices" Version="4.4.1" />
+    <PackageReference Include="System.Reactive.Windows.Threading" Version="4.4.1" />
+    <PackageReference Include="System.Reflection.Context" Version="4.7.0" />
+    <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="4.7.1" />
+    <PackageReference Include="System.Threading.Tasks.Extensions" Version="4.5.4" />
+    <PackageReference Include="System.ValueTuple" Version="4.5.0" />
+    <PackageReference Include="System.Windows.Interactivity.WPF" Version="2.0.20525" />
+  </ItemGroup>
 </Project>

@@ -1,0 +1,128 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{4E9223B9-1BC2-45EA-97E0-BA0E1D7A1961}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Dotc.MQ.Websphere</RootNamespace>
+    <AssemblyName>Dotc.MQ.Websphere</AssemblyName>
+    <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <SccProjectName>SAK</SccProjectName>
+    <SccLocalPath>SAK</SccLocalPath>
+    <SccAuxPath>SAK</SccAuxPath>
+    <SccProvider>SAK</SccProvider>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>TRACE;DEBUG</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CodeAnalysisRuleSet>..\DotConsulting.ruleset</CodeAnalysisRuleSet>
+  </PropertyGroup>
+  <PropertyGroup>
+    <SignAssembly>false</SignAssembly>
+  </PropertyGroup>
+  <PropertyGroup>
+    <AssemblyOriginatorKeyFile>..\MQ.snk</AssemblyOriginatorKeyFile>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="amqmdnet, Version=9.0.0.0, Culture=neutral, PublicKeyToken=dd3cb1c9aae9ec97, processorArchitecture=MSIL">
+      <SpecificVersion>True</SpecificVersion>
+      <HintPath>..\..\libs\amqmdnet.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.Composition" />
+    <Reference Include="System.configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="..\DotAssemblyInfo.cs">
+      <Link>Properties\DotAssemblyInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\MQAssemblyInfo.Client.cs">
+      <Link>Properties\MQAssemblyInfo.Client.cs</Link>
+    </Compile>
+    <Compile Include="Configuration\WSConfiguration.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
+    <Compile Include="MCASecurityExit.cs" />
+    <Compile Include="PCF\CMQCFC.cs" />
+    <Compile Include="PCF\MQCFBS.cs" />
+    <Compile Include="PCF\MQCFH.cs" />
+    <Compile Include="PCF\MQCFIL.cs" />
+    <Compile Include="PCF\MQCFIN.cs" />
+    <Compile Include="PCF\MQCFSL.cs" />
+    <Compile Include="PCF\MQCFST.cs" />
+    <Compile Include="PCF\PCFAgent.cs" />
+    <Compile Include="PCF\PCFAgentResponseTracker.cs" />
+    <Compile Include="PCF\PCFException.cs" />
+    <Compile Include="PCF\PCFHeader.cs" />
+    <Compile Include="PCF\PCFMessage.cs" />
+    <Compile Include="PCF\PCFMessageAgent.cs" />
+    <Compile Include="PCF\PCFParameter.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SecureStringHelper.cs" />
+    <Compile Include="SecurityExit.cs" />
+    <Compile Include="WSChannel.cs" />
+    <Compile Include="WSChannelType.cs" />
+    <Compile Include="WsDump2.cs" />
+    <Compile Include="WsListener.cs" />
+    <Compile Include="WSMessage.cs" />
+    <Compile Include="WSMessageAgent.cs" />
+    <Compile Include="WsObjectProvider.cs" />
+    <Compile Include="WSQueue.cs" />
+    <Compile Include="WSQueueManager.cs" />
+    <Compile Include="WSQueueManagerFactory.cs" />
+    <Compile Include="WSObjectNameFilter.cs" />
+    <Compile Include="WSQueueType.cs" />
+    <Compile Include="WSSoftwareInfo.cs" />
+    <Compile Include="WsUtils.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Dotc.Common\Dotc.Common.csproj">
+      <Project>{8a198528-4367-4670-8f24-863404fa0a9c}</Project>
+      <Name>Dotc.Common</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Dotc.MQ\Dotc.MQ.csproj">
+      <Project>{f567819e-199b-48ce-8ff9-cc1d803b3abb}</Project>
+      <Name>Dotc.MQ</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\mqep.licenseheader">
+      <Link>mqep.licenseheader</Link>
+    </None>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>
