@@ -6,7 +6,6 @@
 #endregion
 using System;
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
 using System.Windows;
@@ -17,7 +16,7 @@ using Microsoft.Win32;
 namespace Dotc.MQExplorerPlus
 {
 
-    [Export(typeof(IFileDialogService)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public class FileDialogService : IFileDialogService
     {
 
@@ -25,7 +24,12 @@ namespace Dotc.MQExplorerPlus
         {
         }
 
-        public FileDialogResult ShowOpenFileDialog(object owner, IList<FileType> fileTypes, FileType defaultFileType, string defaultFileName)
+        private static Window GetWindow()
+        {
+            return System.Windows.Application.Current.MainWindow;
+        }
+
+        public FileDialogResult ShowOpenFileDialog(IList<FileType> fileTypes, FileType defaultFileType, string defaultFileName)
         {
             if (fileTypes == null) { throw new ArgumentNullException(nameof(fileTypes)); }
             if (!fileTypes.Any()) { throw new ArgumentException("The fileTypes collection must contain at least one item."); }
@@ -35,14 +39,14 @@ namespace Dotc.MQExplorerPlus
             UIDispatcher.Execute(() =>
             {
                 var dialog = new OpenFileDialog();
-                result = ShowFileDialog(owner, dialog, fileTypes, defaultFileType, defaultFileName);
+                result = ShowFileDialog(dialog, fileTypes, defaultFileType, defaultFileName);
             });
 
             return result;
         }
 
 
-        public FileDialogResult ShowSaveFileDialog(object owner, IList<FileType> fileTypes, FileType defaultFileType, string defaultFileName)
+        public FileDialogResult ShowSaveFileDialog(IList<FileType> fileTypes, FileType defaultFileType, string defaultFileName)
         {
             if (fileTypes == null) { throw new ArgumentNullException(nameof(fileTypes)); }
             if (!fileTypes.Any()) { throw new ArgumentException("The fileTypes collection must contain at least one item."); }
@@ -52,13 +56,13 @@ namespace Dotc.MQExplorerPlus
             UIDispatcher.Execute(() =>
             {
                 var dialog = new SaveFileDialog();
-                result = ShowFileDialog(owner, dialog, fileTypes, defaultFileType, defaultFileName);
+                result = ShowFileDialog(dialog, fileTypes, defaultFileType, defaultFileName);
             });
 
             return result;
         }
 
-        private static FileDialogResult ShowFileDialog(object owner, FileDialog dialog, IList<FileType> fileTypes,
+        private static FileDialogResult ShowFileDialog(FileDialog dialog, IList<FileType> fileTypes,
             FileType defaultFileType, string defaultFileName)
         {
             var filterIndex = fileTypes.ToList().IndexOf(defaultFileType);
@@ -74,7 +78,7 @@ namespace Dotc.MQExplorerPlus
             }
 
             dialog.Filter = CreateFilter(fileTypes);
-            if (dialog.ShowDialog(owner as Window) == true)
+            if (dialog.ShowDialog(GetWindow()) == true)
             {
                 filterIndex = dialog.FilterIndex - 1;
                 if (filterIndex >= 0 && filterIndex < fileTypes.Count)

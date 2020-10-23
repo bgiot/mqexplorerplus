@@ -10,7 +10,6 @@ using System.Dynamic;
 using Dotc.Common;
 using IBM.WMQ;
 using System.Collections;
-using System.Text;
 
 namespace Dotc.MQ.Websphere
 {

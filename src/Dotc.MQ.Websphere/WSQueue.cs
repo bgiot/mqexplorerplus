@@ -9,12 +9,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Dynamic;
 using Dotc.Common;
-using Dotc.MQ.Websphere.Configuration;
 using IBM.WMQ;
 using static System.FormattableString;
-using System.Collections.Concurrent;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Collections;
 
 namespace Dotc.MQ.Websphere

@@ -6,7 +6,6 @@
 #endregion
 using System.Configuration;
 using Dotc.MQExplorerPlus.Core.Models;
-using System;
 
 namespace Dotc.MQExplorerPlus.Configuration
 {

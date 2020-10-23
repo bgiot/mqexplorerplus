@@ -7,7 +7,6 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Dotc.MQExplorerPlus.Core.Services;
@@ -30,7 +29,6 @@ namespace Dotc.MQExplorerPlus.Core.Models
     }
 
 
-    [Export(typeof(UserSettings)), PartCreationPolicy(CreationPolicy.Shared)]
     [DisplayName("Default Settings")]
     public class UserSettings : ValidatableBindableBase, IUserSettings
     {
@@ -53,7 +51,6 @@ namespace Dotc.MQExplorerPlus.Core.Models
         public const int DefaultMaxRecentConnections = 10;
 
 
-        [ImportingConstructor]
         public UserSettings(ISettingsProvider provider)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));

@@ -6,12 +6,7 @@
 #endregion
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels

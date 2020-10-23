@@ -7,10 +7,8 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Linq;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Data;
@@ -32,7 +30,6 @@ using Dotc.Wpf.Controls.HexViewer;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(MessageListViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public sealed class MessageListViewModel : DocumentViewModel, IKeyboardCommands, IStatusInfo
     {
         private int? _browseLimit;
@@ -40,7 +37,6 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
         private object _syncLock = new object();
 
-        [ImportingConstructor]
         public MessageListViewModel(IMessageListView view, IApplicationController appc)
             : base(view, appc)
         {
@@ -283,7 +279,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
         private async Task LoadParserConfigurationAsync()
         {
-            var result = App.FileDialogService.ShowOpenFileDialog(App.ShellService.ShellView,
+            var result = App.FileDialogService.ShowOpenFileDialog(
                 ParserConfiguration.FILE_EXTENSIONS, ParserConfiguration.FILE_EXTENSIONS[0], string.Empty);
             if (result.IsValid)
             {
@@ -342,7 +338,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
                     }
                 }
-                App.MessageService.ShowMessage(App.ShellService.ShellView, Invariant($"File '{filename}' generated."));
+                App.MessageService.ShowMessage(Invariant($"File '{filename}' generated."));
 
             });
 
@@ -403,7 +399,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
                 if (loadDone)
                 {
-                    App.MessageService.ShowMessage(App.ShellService.ShellView,
+                    App.MessageService.ShowMessage(
                         Invariant($"{countMsgLoaded} message(s) loaded."));
                     reload = true;
                 }
@@ -443,7 +439,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             var action = truncate ? "TRUNCATE command" : "DELETE command";
             var msg = Invariant($"You are going to empty the queue ({action}).\n\nAre you sure?");
 
-            if (App.MessageService.ShowYesNoQuestion(App.ShellService.ShellView, msg))
+            if (App.MessageService.ShowYesNoQuestion( msg))
             {
                 await ExecuteAsync((ct) =>
                 {
@@ -481,7 +477,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                             ps.CancellationToken, ps.Progress);
                     }
                 }
-                App.MessageService.ShowMessage(App.ShellService.ShellView,
+                App.MessageService.ShowMessage(
                     Invariant($"File '{filename}' generated."));
             });
 
@@ -492,7 +488,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
             var msg = Invariant($"You are going to delete {list.Count} message(s).\nAre you sure?");
 
-            if (App.MessageService.ShowYesNoQuestion(App.ShellService.ShellView, msg))
+            if (App.MessageService.ShowYesNoQuestion( msg))
             {
                 await ExecuteAsync((ct) =>
                     {

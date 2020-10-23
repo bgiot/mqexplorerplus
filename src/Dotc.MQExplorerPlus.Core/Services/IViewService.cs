@@ -38,7 +38,7 @@ namespace Dotc.MQExplorerPlus.Core.Services
 
 
 
-        bool IsModalOpened { get; }
+    bool IsModalOpened { get; }
         event EventHandler ModalOpening;
         event EventHandler ModalClosing;
 

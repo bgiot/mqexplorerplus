@@ -6,8 +6,6 @@
 #endregion
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 using System.Windows;
 using Dotc.MQ;
 using Dotc.MQExplorerPlus.Core.Models;
@@ -18,6 +16,8 @@ using Dotc.Mvvm;
 using static System.FormattableString;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
+using Dotc.Wpf;
 
 namespace Dotc.MQExplorerPlus.Core.Controllers
 {
@@ -43,68 +43,36 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
         void OpenDumpCreationSettingsView(QueueInfo queue, Action<string, DumpCreationSettings> callback);
         void OpenDumpLoadSettingsView(QueueInfo queue, Action<string, DumpLoadSettings> callback);
         void OpenExportMessagesSettingsView(QueueInfo queue, int messagesCount, Action<string, CsvExportSettings> callback);
+
+        T GetViewModel<T>();
+
+
     }
 
 
-    [Export(typeof(IApplicationController)), PartCreationPolicy(CreationPolicy.Shared)]
     public sealed class ApplicationController : IApplicationController
     {
-        private readonly Lazy<ShellViewModel> _shell;
-
-        private readonly Lazy<IViewService> _viewService;
-        private readonly Lazy<ShellService> _shellService;
-        private readonly Lazy<IMessageService> _messageService;
-        private readonly Lazy<MqController> _mqController;
-        private readonly Lazy<UserSettings> _userSettings;
-        private readonly Lazy<AppSettings> _appSettings;
-        private readonly Lazy<IFileDialogService> _fds;
 
 
-        [ImportingConstructor]
-        public ApplicationController(
-            Lazy<ShellViewModel> shell,
-            Lazy<IViewService> vs,
-            Lazy<ShellService> ss,
-            Lazy<IMessageService> ms,
-            Lazy<MqController> mqc,
-            Lazy<UserSettings> users,
-            Lazy<AppSettings> apps,
-            Lazy<IFileDialogService> fds)
+        public ApplicationController(IServiceProvider serviceProvider)
         {
-
-            if (shell == null) throw new ArgumentNullException(nameof(shell));
-            if (vs == null) throw new ArgumentNullException(nameof(vs));
-            if (ss == null) throw new ArgumentNullException(nameof(ss));
-            if (ms == null) throw new ArgumentNullException(nameof(ms));
-            if (mqc == null) throw new ArgumentNullException(nameof(mqc));
-            if (users == null) throw new ArgumentNullException(nameof(users));
-            if (apps == null) throw new ArgumentNullException(nameof(apps));
-            if (fds == null) throw new ArgumentNullException(nameof(fds));
-
-
-
-            _userSettings = users;
-            _appSettings = apps;
-            _shell = shell;
-            _viewService = vs;
-            _shellService = ss;
-            _mqController = mqc;
-            _messageService = ms;
-            _fds = fds;
-
-
+            ServiceProvider = serviceProvider ?? throw new ArgumentNullException(nameof(serviceProvider));
         }
 
-        public AppSettings AppSettings { get { return _appSettings.Value; } }
+        public IServiceProvider ServiceProvider { get; }
+        public AppSettings AppSettings { get { return ServiceProvider.GetService<AppSettings>();} }
+        public UserSettings UserSettings { get { return ServiceProvider.GetService<UserSettings>(); } }
+        public MqController MqController { get { return ServiceProvider.GetService<MqController>(); } }
+        public IMessageService MessageService { get { return ServiceProvider.GetService<IMessageService>(); } }
+        public ShellService ShellService { get { return ServiceProvider.GetService<ShellService>(); } }
+        public IViewService ViewService { get { return ServiceProvider.GetService<IViewService>(); } }
+        public IFileDialogService FileDialogService { get { return ServiceProvider.GetService<IFileDialogService>(); } }
+        public ShellViewModel Shell { get { return ServiceProvider.GetService<ShellViewModel>(); } }
 
-        public UserSettings UserSettings { get { return _userSettings.Value; } }
-        public MqController MqController { get { return _mqController.Value; } }
-        public IMessageService MessageService { get { return _messageService.Value; } }
-        public ShellService ShellService { get { return _shellService.Value; } }
-        public IViewService ViewService { get { return _viewService.Value; } }
-        public ShellViewModel Shell { get { return _shell.Value; } }
-        public IFileDialogService FileDialogService { get { return _fds.Value; } }
-
+        public T GetViewModel<T>()
+        {
+            return UIDispatcher.Execute<T>(() => ServiceProvider.GetService<T>());
+        }
 
         private void Initialize()
         {
@@ -114,7 +82,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         private void ShowAbout()
         {
-            var svm = CompositionHost.GetInstance<AboutViewModel>();
+            var svm = GetViewModel<AboutViewModel>();
             ViewService.ShowModalView(svm);
         }
 
@@ -126,7 +94,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         private void ShowSettings()
         {
-            var svm = CompositionHost.GetInstance<SettingsViewModel>(); 
+            var svm = GetViewModel<SettingsViewModel>(); 
             svm.Initialize(UserSettings);
 
             ViewService.ShowModalView(svm);
@@ -137,7 +105,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
             if (!ViewService.DocumentViewExists(ParsingEditorViewModel.ID))
             {
-                var vm = CompositionHost.GetInstance<ParsingEditorViewModel>(); 
+                var vm = GetViewModel<ParsingEditorViewModel>(); 
                 ViewService.AddDocumentView(vm, true);
             }
             else
@@ -155,7 +123,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
                 return;
             }
 
-            if (!MessageService.ShowYesNoQuestion(ShellService.ShellView, "You are exiting the application.\nAre you sure?"))
+            if (!MessageService.ShowYesNoQuestion("You are exiting the application.\nAre you sure?"))
             {
                 e.Cancel = true;
             }
@@ -467,7 +435,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
         }
         private void SelectQueueManagerInternal(bool remote, bool showObjectFilter, RecentQueueManagerConnection rqmc, Action<IQueueManager, IObjectNameFilter> onOk)
         {
-            var oqmvm = CompositionHost.GetInstance<OpenQueueManagerViewModel>(); 
+            var oqmvm = GetViewModel<OpenQueueManagerViewModel>(); 
             oqmvm.Initialize(remote, showObjectFilter, rqmc);
 
 
@@ -487,7 +455,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         private void SelectQueueInternal(IQueueManager qm, IRecentQueueConnection rqc, Action<IQueue> onOk)
         {
-            var oqvm = CompositionHost.GetInstance<OpenQueueViewModel>(); 
+            var oqvm = GetViewModel<OpenQueueViewModel>(); 
 
             oqvm.Initialize(qm);
             if (rqc != null)
@@ -525,7 +493,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
                         title = title + "(#)";
                     }
 
-                    var vm = CompositionHost.GetInstance<QueueManagerViewModel>(); 
+                    var vm = GetViewModel<QueueManagerViewModel>(); 
                     vm.Title = title;
                     vm.UniqueId = key;
                     ViewService.AddDocumentView(vm, true);
@@ -548,7 +516,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
             {
                 if (!ViewService.DocumentViewExists(queue.UniqueId))
                 {
-                    var vm = CompositionHost.GetInstance<MessageListViewModel>(); 
+                    var vm = GetViewModel<MessageListViewModel>(); 
 
                     vm.Title = Invariant($"{queue.Name}@{queue.QueueManager.Name}");
                     vm.UniqueId = queue.UniqueId;
@@ -566,7 +534,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenPutMessageView(QueueInfo queue)
         {
-            var pmvm = CompositionHost.GetInstance<PutMessageViewModel>(); 
+            var pmvm = GetViewModel<PutMessageViewModel>(); 
             pmvm.Initialize(queue);
 
             ViewService.ShowModalView(pmvm);
@@ -580,7 +548,6 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
         public IShellView Run()
         {
             Initialize();
-
 
             ShellService.ShellView = Shell.View as IShellView;
 
@@ -611,16 +578,14 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
                 WeakEventManager<IShellView, CancelEventArgs>
                         .AddHandler(ShellService.ShellView, "Closing", ShellView_Closing);
 
-
             }
 
-            return ShellService.ShellView; 
-
+            return ShellService.ShellView;
         }
 
         private void ClearRecentConnections()
         {
-            if (MessageService.ShowYesNoQuestion(ShellService.ShellView, "Clearing the recent connections history.\nAre you sure?"))
+            if (MessageService.ShowYesNoQuestion("Clearing the recent connections history.\nAre you sure?"))
                 UserSettings.ClearRecentConnections();
         }
 
@@ -662,7 +627,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenChannelStopParametersView(Action<ChannelStopParameters> callback)
         {
-            var vm = CompositionHost.GetInstance<ChannelStopParametersViewModel>();
+            var vm = GetViewModel<ChannelStopParametersViewModel>();
 
             ViewService.ShowModalView(vm, () =>
             {
@@ -675,7 +640,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenChannelResetParametersView(Action<ChannelResetParameters> callback)
         {
-            var vm = CompositionHost.GetInstance<ChannelResetParametersViewModel>();
+            var vm = GetViewModel<ChannelResetParametersViewModel>();
 
             ViewService.ShowModalView(vm, () =>
             {
@@ -688,7 +653,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenChannelResolveParametersView(Action<ChannelResolveParameters> callback)
         {
-            var vm = CompositionHost.GetInstance<ChannelResolveParametersViewModel>();
+            var vm = GetViewModel<ChannelResolveParametersViewModel>();
 
             ViewService.ShowModalView(vm, () =>
             {
@@ -701,7 +666,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenDumpCreationSettingsView(QueueInfo queue, Action<string, DumpCreationSettings> callback)
         {
-            var vm = CompositionHost.GetInstance<DumpCreationSettingsViewModel>();
+            var vm = GetViewModel<DumpCreationSettingsViewModel>();
             vm.Initialize(queue);
 
             ViewService.ShowModalView(vm, () =>
@@ -715,7 +680,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenDumpLoadSettingsView(QueueInfo queue, Action<string, DumpLoadSettings> callback)
         {
-            var vm = CompositionHost.GetInstance<DumpLoadSettingsViewModel>();
+            var vm = GetViewModel<DumpLoadSettingsViewModel>();
             vm.Initialize(queue);
 
             ViewService.ShowModalView(vm, () =>
@@ -729,7 +694,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
 
         public void OpenExportMessagesSettingsView(QueueInfo queue, int messagesCount, Action<string, CsvExportSettings> callback)
         {
-            var vm = CompositionHost.GetInstance<ExportMessagesSettingsViewModel>();
+            var vm = GetViewModel<ExportMessagesSettingsViewModel>();
             vm.Initialize(queue, messagesCount);
 
             ViewService.ShowModalView(vm, () =>

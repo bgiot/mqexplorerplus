@@ -7,7 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Globalization;
 using System.IO;
@@ -17,7 +16,6 @@ using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.Views;
-using Nito.AsyncEx;
 using Dotc.MQ;
 using System.Text.RegularExpressions;
 
@@ -30,12 +28,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         FromFile,
     }
 
-    [Export(typeof(PutMessageViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class PutMessageViewModel : ModalViewModel
     {
 
-
-        [ImportingConstructor]
         public PutMessageViewModel(IPutMessageView view, IApplicationController appc)
             : base(view, appc)
         {
@@ -76,7 +71,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         {
             FileType[] ft = { new FileType("Text File", ".txt"), new FileType("All", ".*") };
 
-            var result = App.FileDialogService.ShowOpenFileDialog(App.ShellService.ShellView, ft, ft[0], string.Empty);
+            var result = App.FileDialogService.ShowOpenFileDialog(ft, ft[0], string.Empty);
             if (result.IsValid)
             {
                 Filename = result.FileName;

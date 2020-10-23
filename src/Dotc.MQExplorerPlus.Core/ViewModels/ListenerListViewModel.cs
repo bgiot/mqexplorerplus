@@ -12,7 +12,6 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -195,7 +194,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         private async Task AskStopListenersAsync(IList<ListenerInfo> list)
         {
             string msg = "Are you sure you want to stop listener ?";
-            var result =Parent.App.MessageService.ShowYesNoQuestion(Parent.App.ShellService.ShellView, msg);
+            var result =Parent.App.MessageService.ShowYesNoQuestion(msg);
             if (result)
             {
                 await StopListenersAsync(list);

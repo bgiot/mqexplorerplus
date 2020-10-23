@@ -6,7 +6,6 @@
 #endregion
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Security;
 using Dotc.MQ;
@@ -14,7 +13,6 @@ using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.Mvvm;
-using static System.FormattableString;
 using System.Collections.ObjectModel;
 using System.Windows.Data;
 using System.Windows.Input;
@@ -23,7 +21,6 @@ using System.Linq;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(OpenQueueManagerViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public sealed class OpenQueueManagerViewModel : ModalViewModel
     {
         private string _queueManagerName;
@@ -31,8 +28,6 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         private bool _isRemote = true;
         private bool _showObjectFilter = true;
 
-
-        [ImportingConstructor]
         public OpenQueueManagerViewModel(IOpenQueueManagerView view, IApplicationController appc) : base(view, appc)
         {
             Title = "Select Queue Manager...";

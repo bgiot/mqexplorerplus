@@ -5,21 +5,17 @@
 //
 #endregion
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Input;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Views;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Shapes;
-using Dotc.Wpf.Controls;
 using Dotc.MQExplorerPlus.Core;
 
 namespace Dotc.MQExplorerPlus.Views
 {
-    [Export(typeof(IMessageListView)), PartCreationPolicy(CreationPolicy.NonShared)]
+
     public partial class MessageListView : UserControl, IMessageListView
     {
         public MessageListView()

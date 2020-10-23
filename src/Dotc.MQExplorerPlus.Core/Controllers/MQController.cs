@@ -5,19 +5,17 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using System.Security;
 using Dotc.MQ;
 using Dotc.MQExplorerPlus.Core.Models;
 
 namespace Dotc.MQExplorerPlus.Core.Controllers
 {
-    [Export(typeof(MqController)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public sealed class MqController
     {
         private readonly IQueueManagerFactory _mqFactory;
 
-        [ImportingConstructor]
         public MqController(IQueueManagerFactory factory)
         {
             if (factory == null) throw new ArgumentNullException(nameof(factory));

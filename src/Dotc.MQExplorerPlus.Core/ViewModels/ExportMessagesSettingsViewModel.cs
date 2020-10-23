@@ -10,21 +10,14 @@ using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.Views;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 using static System.FormattableString;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(ExportMessagesSettingsViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class ExportMessagesSettingsViewModel : ModalViewModel
     {
-        [ImportingConstructor]
         public ExportMessagesSettingsViewModel(IExportMessagesSettingsView view, IApplicationController appController) : base(view, appController)
         {
             Title = "Csv Export";
@@ -48,7 +41,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
             FileType[] ft = { new FileType("csv", ".csv"), new FileType("All", ".*") };
 
-            var result = App.FileDialogService.ShowSaveFileDialog(App.ShellService.ShellView, ft, ft[0], defaultFileName);
+            var result = App.FileDialogService.ShowSaveFileDialog(ft, ft[0], defaultFileName);
             if (result.IsValid)
             {
                 Filename = result.FileName;

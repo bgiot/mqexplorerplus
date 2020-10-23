@@ -108,6 +108,11 @@
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Linq.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.PlatformServices.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Windows.Threading.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Threading.Tasks.Extensions.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />     
       </Component>
       <Component Id="IBM" Guid="00328928-E188-490F-B2EB-4E72111B3359">
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)amqmdnet.dll" />

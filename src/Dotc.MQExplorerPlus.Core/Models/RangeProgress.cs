@@ -5,8 +5,6 @@
 //
 #endregion
 using System.Threading;
-using System.Threading.Tasks;
-using Dotc.MQ;
 using Dotc.Mvvm;
 
 namespace Dotc.MQExplorerPlus.Core.Models

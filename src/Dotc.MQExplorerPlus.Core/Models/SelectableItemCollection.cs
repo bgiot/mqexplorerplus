@@ -4,7 +4,6 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using Dotc.Wpf;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,7 +11,6 @@ using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Windows.Data;
 
 namespace Dotc.MQExplorerPlus.Core.Models
 {

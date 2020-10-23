@@ -5,12 +5,11 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using IBM.WMQ;
 
 namespace Dotc.MQ.Websphere
 {
-    [Export(typeof(IQueueManagerFactory)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public class WsQueueManagerFactory : IQueueManagerFactory
     {
 

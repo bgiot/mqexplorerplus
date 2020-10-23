@@ -335,7 +335,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                 string.Concat(queues.Select(q => Invariant($"\n\t- {q.UniqueId}")).ToArray()) +
                 "\n\nAre you sure?";
 
-            if (Parent.App.MessageService.ShowYesNoQuestion(Parent.App.ShellService.ShellView, msg))
+            if (Parent.App.MessageService.ShowYesNoQuestion( msg))
             {
 
                 await Parent.ExecuteAsync((ct) =>

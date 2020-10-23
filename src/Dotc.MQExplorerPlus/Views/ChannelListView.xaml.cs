@@ -7,26 +7,11 @@
 using Dotc.MQ;
 using Dotc.MQ.Websphere;
 using Dotc.MQExplorerPlus.Core;
-using Dotc.MQExplorerPlus.Core.Models;
-using Dotc.MQExplorerPlus.Core.ViewModels;
-using Dotc.Mvvm;
 using Dotc.Wpf;
-using Dotc.Wpf.Controls;
-using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
 namespace Dotc.MQExplorerPlus.Views
 {

@@ -6,7 +6,6 @@
 #endregion
 using System;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace Dotc.MQ.Websphere.PCF
 {

@@ -6,17 +6,14 @@
 #endregion
 using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Views;
-using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 using Dotc.MQExplorerPlus.Core.Models;
-using System.Windows;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(AboutViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
+
     public class AboutViewModel : ModalViewModel
     {
-        [ImportingConstructor]
+
         public AboutViewModel(IAboutView view, IApplicationController appc)
             : base(view, appc)
         {

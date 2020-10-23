@@ -5,16 +5,15 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.MQExplorerPlus.Core.Controllers;
 using System.Windows;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(ShellViewModel)), PartCreationPolicy(CreationPolicy.Shared)]
 
     public sealed class ShellViewModel : ViewModel
     {
@@ -24,7 +23,6 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         private readonly WelcomeViewModel _welcomeContent;
         private readonly MainViewModel _mainContent;
 
-        [ImportingConstructor]
         public ShellViewModel(IShellView window, IApplicationController appController)
             : base (window, appController)
         {
@@ -45,8 +43,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             WeakEventManager<IViewService, CountEventArgs>
                 .AddHandler(App.ViewService, "DocumentsCountChanged", Documents_CountChanged);
 
-            _welcomeContent = CompositionHost.GetInstance<WelcomeViewModel>();
-            _mainContent = CompositionHost.GetInstance<MainViewModel>();
+            _welcomeContent = App.GetViewModel<WelcomeViewModel>();
+            _mainContent = App.GetViewModel<MainViewModel>();
 
             Content = _welcomeContent;
 

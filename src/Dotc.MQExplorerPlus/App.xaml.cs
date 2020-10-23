@@ -5,16 +5,11 @@
 //
 #endregion
 using System;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 using Dotc.MQExplorerPlus.Core;
 using Dotc.MQExplorerPlus.Core.Models;
-using Dotc.MQExplorerPlus.Core.Views;
-using Dotc.MQExplorerPlus.Views;
 using static System.FormattableString;
-using System.Windows.Forms;
 using System.Runtime.ExceptionServices;
 using System.Security;
 

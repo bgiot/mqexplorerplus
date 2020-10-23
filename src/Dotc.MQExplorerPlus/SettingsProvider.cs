@@ -5,7 +5,6 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using System.IO;
 using System.Xml;
 using Dotc.MQExplorerPlus.Core;
@@ -15,7 +14,7 @@ using ISettingsProvider = Dotc.MQExplorerPlus.Core.Services.ISettingsProvider;
 
 namespace Dotc.MQExplorerPlus
 {
-    [Export(typeof(ISettingsProvider))]
+
     public class SettingsProvider : ISettingsProvider
     {
 

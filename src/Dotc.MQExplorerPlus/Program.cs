@@ -12,7 +12,6 @@ using System.Text;
 using System.Threading;
 using System.Xml.Linq;
 using System.Xml.XPath;
-using Dotc.MQ.Websphere.Configuration;
 
 namespace Dotc.MQExplorerPlus
 {

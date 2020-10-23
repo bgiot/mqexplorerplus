@@ -5,15 +5,9 @@
 //
 #endregion
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Dynamic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dotc.Common;
 using static System.FormattableString;
-using Dotc.MQ.Websphere.Configuration;
 using IBM.WMQ;
 using System.Collections;
 

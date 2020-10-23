@@ -7,22 +7,17 @@
 using System;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using System.ComponentModel.DataAnnotations;
 using System.Windows.Input;
 using Dotc.MQ;
 using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Views;
-using static System.FormattableString;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(OpenQueueViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class OpenQueueViewModel : ModalViewModel
     {
-
-
-        [ImportingConstructor]
+    
         public OpenQueueViewModel(IOpenQueueView view, IApplicationController appc)
             : base(view, appc)
         {

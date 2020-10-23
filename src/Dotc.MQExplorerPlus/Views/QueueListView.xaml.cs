@@ -5,7 +5,6 @@
 //
 #endregion
 using System.Collections.Generic;
-using System.ComponentModel.Composition;
 using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
@@ -14,12 +13,8 @@ using Dotc.MQ;
 using Dotc.MQ.Websphere;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.ViewModels;
-using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.Mvvm;
 using Dotc.Wpf;
-using System.Windows.Controls.Ribbon;
-using System.Windows.Shapes;
-using Dotc.Wpf.Controls;
 using Dotc.MQExplorerPlus.Core;
 
 namespace Dotc.MQExplorerPlus.Views

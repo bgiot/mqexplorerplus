@@ -4,22 +4,18 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using System.ComponentModel.Composition;
 using System.Windows;
-using Dotc.Common;
-using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.ViewModels;
 using Dotc.MQExplorerPlus.Core.Views;
 using Xceed.Wpf.Toolkit;
-using System;
 
 namespace Dotc.MQExplorerPlus.Views
 {
     /// <summary>
     /// Interaction logic for ShellView.xaml
     /// </summary>
-    [Export(typeof(IShellView)), PartCreationPolicy(CreationPolicy.NonShared)]
+
     public partial class ShellWindow : Window, IShellView
     {
         public ShellWindow()

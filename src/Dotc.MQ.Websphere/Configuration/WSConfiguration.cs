@@ -5,9 +5,7 @@
 //
 #endregion
 using IBM.WMQ;
-using System;
 using System.Configuration;
-using System.Threading.Tasks;
 
 namespace Dotc.MQ.Websphere.Configuration
 {

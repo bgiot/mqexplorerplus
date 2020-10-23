@@ -4,7 +4,6 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using System.ComponentModel.Composition;
 using System.Windows;
 using System.Windows.Input;
 using Dotc.MQExplorerPlus.Core.Views;
@@ -14,7 +13,7 @@ namespace Dotc.MQExplorerPlus.Views
     /// <summary>
     /// Interaction logic for PutMessageView.xaml
     /// </summary>
-    [Export(typeof(IPutMessageView)), PartCreationPolicy(CreationPolicy.NonShared)]
+
     public partial class PutMessageView : /*UserControl,*/ IPutMessageView
     {
         public PutMessageView()

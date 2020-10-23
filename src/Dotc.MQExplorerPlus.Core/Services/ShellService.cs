@@ -5,7 +5,6 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Views;
@@ -15,13 +14,11 @@ using Dotc.MQExplorerPlus.Core.ViewModels;
 
 namespace Dotc.MQExplorerPlus.Core.Services
 {
-    [Export(typeof(ShellService)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public sealed class ShellService : BindableBase, IDisposable
     {
         private bool _busy;
-        private IShellView _shellView;
         private readonly object _synlock = new object();
-
 
         private ICommand _exitCommand;
         private ICommand _openQueueManagerCommand;
@@ -37,8 +34,7 @@ namespace Dotc.MQExplorerPlus.Core.Services
         private IKeyboardCommands _keyboardCommands;
         private ISupportAutomaticRefresh _automaticRefreshSubscriber;
         private IStatusInfo _statusInfo;
-
-        [ImportingConstructor]
+        private IShellView _shellView;
         public ShellService(UserSettings appSettings)
         {
             if (appSettings == null) throw new ArgumentNullException(nameof(appSettings));

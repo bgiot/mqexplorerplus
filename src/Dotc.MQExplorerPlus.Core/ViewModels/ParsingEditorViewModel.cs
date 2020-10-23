@@ -5,7 +5,6 @@
 //
 #endregion
 using Dotc.MQExplorerPlus.Core.Views;
-using System.ComponentModel.Composition;
 using System.Windows.Input;
 using Dotc.MQExplorerPlus.Core.Models.Parser;
 using Dotc.MQExplorerPlus.Core.Models.Parser.Configuration;
@@ -14,13 +13,11 @@ using Dotc.MQExplorerPlus.Core.Controllers;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(ParsingEditorViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class ParsingEditorViewModel : DocumentViewModel
     {
 
         public const string ID = "ParsingEditor";
 
-        [ImportingConstructor]
         public ParsingEditorViewModel(IParsingEditorView view, IApplicationController appc) : base(view, appc)
         {
 
@@ -77,7 +74,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             try
             {
                 var conf = ParserConfiguration.LoadFromString(ParserDefinitionDocument.Text);
-                var result = App.FileDialogService.ShowSaveFileDialog(App.ShellService.ShellView,
+                var result = App.FileDialogService.ShowSaveFileDialog(
                     ParserConfiguration.FILE_EXTENSIONS, ParserConfiguration.FILE_EXTENSIONS[0], string.Empty);
                 if (result.IsValid)
                 {
@@ -96,7 +93,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
         private void LoadParserDefinition()
         {
-            var result = App.FileDialogService.ShowOpenFileDialog(App.ShellService.ShellView,
+            var result = App.FileDialogService.ShowOpenFileDialog(
                 ParserConfiguration.FILE_EXTENSIONS, ParserConfiguration.FILE_EXTENSIONS[0], string.Empty);
             if (result.IsValid)
             {

@@ -7,8 +7,6 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.ComponentModel.Composition;
-using System.Threading.Tasks;
 using System.Windows;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.ViewModels;
@@ -18,7 +16,7 @@ using Dotc.Wpf;
 
 namespace Dotc.MQExplorerPlus
 {
-    [Export(typeof(IViewService)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public class ViewService : BindableBase, IViewService
     {
 

@@ -5,7 +5,6 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition;
 using System.Windows;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
@@ -14,7 +13,7 @@ using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
 namespace Dotc.MQExplorerPlus
 {
-    [Export(typeof(IMessageService)), PartCreationPolicy(CreationPolicy.Shared)]
+
     public sealed class MessageService : IMessageService
     {
         private static MessageBoxResult MessageBoxResult => MessageBoxResult.None;
@@ -41,15 +40,20 @@ namespace Dotc.MQExplorerPlus
             After?.Invoke(this, new EventArgs());
         }
 
+        private Window GetWindow() 
+        {
+            return System.Windows.Application.Current.MainWindow;
+        }
+
         /// <summary>
         /// Shows the message.
         /// </summary>
         /// <param name="owner">The window that owns this Message Window.</param>
         /// <param name="message">The message.</param>
-        public void ShowMessage(object owner, string message)
+        public void ShowMessage(string message)
         {
             OnBefore();
-            var ownerWindow = owner as Window;
+            var ownerWindow = GetWindow();
             if (ownerWindow != null)
             {
                 UIDispatcher.Execute(() =>
@@ -73,10 +77,10 @@ namespace Dotc.MQExplorerPlus
         /// </summary>
         /// <param name="owner">The window that owns this Message Window.</param>
         /// <param name="message">The message.</param>
-        public void ShowWarning(object owner, string message)
+        public void ShowWarning(string message)
         {
             OnBefore();
-            var ownerWindow = owner as Window;
+            var ownerWindow = GetWindow();
             if (ownerWindow != null)
             {
                 UIDispatcher.Execute(() =>
@@ -101,10 +105,10 @@ namespace Dotc.MQExplorerPlus
         /// </summary>
         /// <param name="owner">The window that owns this Message Window.</param>
         /// <param name="message">The message.</param>
-        public void ShowError(object owner, string message)
+        public void ShowError(string message)
         {
             OnBefore();
-            var ownerWindow = owner as Window;
+            var ownerWindow = GetWindow();
             if (ownerWindow != null)
             {
                 UIDispatcher.Execute(() =>
@@ -130,11 +134,11 @@ namespace Dotc.MQExplorerPlus
         /// <param name="owner">The window that owns this Message Window.</param>
         /// <param name="message">The question.</param>
         /// <returns><c>true</c> for yes, <c>false</c> for no and <c>null</c> for cancel.</returns>
-        public bool? ShowQuestion(object owner, string message)
+        public bool? ShowQuestion(string message)
         {
             OnBefore();
 
-            var ownerWindow = owner as Window;
+            var ownerWindow = GetWindow();
             var result = MessageBoxResult.None;
             if (ownerWindow != null)
             {
@@ -167,11 +171,11 @@ namespace Dotc.MQExplorerPlus
         /// <param name="owner">The window that owns this Message Window.</param>
         /// <param name="message">The question.</param>
         /// <returns><c>true</c> for yes and <c>false</c> for no.</returns>
-        public bool ShowYesNoQuestion(object owner, string message)
+        public bool ShowYesNoQuestion(string message)
         {
             OnBefore();
 
-            var ownerWindow = owner as Window;
+            var ownerWindow = GetWindow();
             var result = MessageBoxResult.None;
             if (ownerWindow != null)
             {

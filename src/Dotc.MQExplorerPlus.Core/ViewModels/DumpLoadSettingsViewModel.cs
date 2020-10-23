@@ -4,14 +4,8 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Views;
-using System.ComponentModel.Composition;
 using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.Models;
 using static System.FormattableString;
@@ -23,10 +17,8 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(DumpLoadSettingsViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public class DumpLoadSettingsViewModel : ModalViewModel
     {
-        [ImportingConstructor]
         public DumpLoadSettingsViewModel(IDumpLoadSettingsView view, IApplicationController appController) : base(view, appController)
         {
             Title = "Load Dump";
@@ -48,7 +40,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         {
             FileType[] ft = { new FileType("Queue dump", ".qdump"), new FileType("All", ".*") };
 
-            var result = App.FileDialogService.ShowOpenFileDialog(App.ShellService.ShellView, ft, ft[0], string.Empty);
+            var result = App.FileDialogService.ShowOpenFileDialog(ft, ft[0], string.Empty);
             if (result.IsValid)
             {
                 Filename = result.FileName;

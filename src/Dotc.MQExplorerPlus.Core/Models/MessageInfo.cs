@@ -9,7 +9,6 @@ using System.Xml;
 using Dotc.MQ;
 using Dotc.Wpf.Controls.HexViewer;
 using Newtonsoft.Json.Linq;
-using System.Threading;
 
 namespace Dotc.MQExplorerPlus.Core.Models
 {

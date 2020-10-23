@@ -5,13 +5,8 @@
 //
 #endregion
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Views;
-using System.ComponentModel.Composition;
 using Dotc.MQExplorerPlus.Core.Models;
 using System.Windows.Input;
 using Dotc.MQExplorerPlus.Core.Services;
@@ -22,11 +17,9 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(DumpCreationSettingsViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
 
     public class DumpCreationSettingsViewModel : ModalViewModel
     {
-        [ImportingConstructor]
         public DumpCreationSettingsViewModel(IDumpCreationSettingsView view, IApplicationController appController) : base(view, appController)
         {
             Title = "Create Dump";
@@ -53,7 +46,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             string defaultFileName = Invariant($"{Queue.QueueManager.Name}_{Queue.Name}_{DateTime.Now:yyyyMMddHHmmss}.qdump");
             FileType[] ft = { new FileType("Queue dump", ".qdump"), new FileType("All", ".*") };
 
-            var result = App.FileDialogService.ShowSaveFileDialog(App.ShellService.ShellView, ft, ft[0], defaultFileName);
+            var result = App.FileDialogService.ShowSaveFileDialog(ft, ft[0], defaultFileName);
             if (result.IsValid)
             {
                 Filename = result.FileName;

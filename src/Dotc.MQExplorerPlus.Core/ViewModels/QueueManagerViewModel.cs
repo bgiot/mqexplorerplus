@@ -4,8 +4,6 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using System;
-using System.ComponentModel.Composition;
 using System.Threading.Tasks;
 using System.Windows.Input;
 using Dotc.MQ;
@@ -26,11 +24,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         Listeners,
     }
 
-    [Export(typeof(QueueManagerViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
     public sealed class QueueManagerViewModel : DocumentViewModel, IKeyboardCommands, IStatusInfo, ISupportAutomaticRefresh
     {
 
-        [ImportingConstructor]
         public QueueManagerViewModel(IQueueManagerView view, IApplicationController ac)
             : base(view, ac)
         {

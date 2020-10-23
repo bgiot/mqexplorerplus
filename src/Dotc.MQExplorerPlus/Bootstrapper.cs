@@ -5,19 +5,15 @@
 //
 #endregion
 using System;
-using System.ComponentModel.Composition.Hosting;
-using System.Reflection;
-using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Threading;
+using Dotc.MQ;
 using Dotc.MQ.Websphere;
 using Dotc.MQExplorerPlus.Core;
 using Dotc.MQExplorerPlus.Core.Controllers;
+using Dotc.MQExplorerPlus.Core.Services;
 using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.MQExplorerPlus.Views;
-using Dotc.Wpf;
-
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Dotc.MQExplorerPlus
 {
@@ -36,9 +32,12 @@ namespace Dotc.MQExplorerPlus
             var splash = new SplashScreenManager();
             splash.Show();
 
-            InitMef();
+            var sc = new ServiceCollection();
+            sc.AddMqExplorerPlusCoreServices();
+            AddDependencies(sc);
+            var sp = sc.BuildServiceProvider();
 
-            MainController = CompositionHost.GetInstance<IApplicationController>();
+            MainController = sp.GetRequiredService<IApplicationController>();
             IShellView shell = MainController.Run();
 
             if (shell != null && shell is ShellWindow)
@@ -57,22 +56,34 @@ namespace Dotc.MQExplorerPlus
 
         }
 
-
-        private  void InitMef()
+        private void AddDependencies(IServiceCollection sc)
         {
+            sc.AddSingleton<IQueueManagerFactory, WsQueueManagerFactory>();
+            sc.AddSingleton<IViewService, ViewService>();
+            sc.AddSingleton<IMessageService, MessageService>();
+            sc.AddSingleton<ISettingsProvider, SettingsProvider>();
+            sc.AddSingleton<IFileDialogService, FileDialogService>();
 
-                var catalog = new AggregateCatalog();
+            sc.AddSingleton<IMainView, MainView>();
+            sc.AddSingleton<IShellView, ShellWindow>();
+            sc.AddSingleton<IWelcomeView, WelcomeView>();
 
-                catalog.Catalogs.Add(new AssemblyCatalog(Assembly.GetExecutingAssembly()));
-                catalog.Catalogs.Add(new AssemblyCatalog(typeof(IApplicationController).Assembly));
-                catalog.Catalogs.Add(new AssemblyCatalog(typeof(WsQueueManagerFactory).Assembly));
-
-                var container = new CompositionContainer(catalog, CompositionOptions.DisableSilentRejection);
-                CompositionHost.Initialize(container);
-
+            sc.AddTransient<IAboutView, AboutView>();
+            sc.AddTransient<IChannelResetParametersView, ChannelResetParametersView>();
+            sc.AddTransient<IChannelResolveParametersView, ChannelResolveParametersView>();
+            sc.AddTransient<IChannelStopParametersView, ChannelStopParametersView>();
+            sc.AddTransient<IDumpCreationSettingsView, DumpCreationSettingsView>();
+            sc.AddTransient<IDumpLoadSettingsView, DumpLoadSettingsView>();
+            sc.AddTransient<IExportMessagesSettingsView, ExportMessagesSettingsView>();
+            sc.AddTransient<IMessageListView, MessageListView>();
+            sc.AddTransient<IOpenQueueManagerView, OpenQueueManagerView>();
+            sc.AddTransient<IOpenQueueView, OpenQueueView>();
+            sc.AddTransient<IParsingEditorView, ParsingEditorView>();
+            sc.AddTransient<IPutMessageView, PutMessageView>();
+            sc.AddTransient<IQueueManagerView, QueueManagerView>();
+            sc.AddTransient<ISettingsView, SettingsView>();
 
         }
-
 
         public void Shutdown()
         {
@@ -85,7 +96,6 @@ namespace Dotc.MQExplorerPlus
 
         public void Dispose()
         {
-            CompositionHost.Release();
         }
     }
 }

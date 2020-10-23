@@ -91,7 +91,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         }
         protected virtual void ShowErrorMessage(string message, Exception ex = null)
         {       
-            App.MessageService.ShowError(App.ShellService.ShellView, FormatErrorMessage(message, ex));
+            App.MessageService.ShowError(FormatErrorMessage(message, ex));
         }
 
         internal bool ExecuteGuarded(Action act)

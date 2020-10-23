@@ -6,17 +6,16 @@
 #endregion
 using System;
 using System.ComponentModel;
-using System.ComponentModel.Composition;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.MQExplorerPlus.Core.Controllers;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
-    [Export(typeof(SettingsViewModel)), PartCreationPolicy(CreationPolicy.NonShared)]
+
     public class SettingsViewModel : ModalViewModel
     {
-        [ImportingConstructor]
+
         public SettingsViewModel(ISettingsView view, IApplicationController appc)
             : base(view, appc)
         {

@@ -5,7 +5,6 @@
 //
 #endregion
 using Dotc.MQExplorerPlus.Core.Views;
-using System.ComponentModel.Composition;
 using Dotc.Common;
 
 namespace Dotc.MQExplorerPlus.Views
@@ -13,7 +12,6 @@ namespace Dotc.MQExplorerPlus.Views
     /// <summary>
     /// Interaction logic for AboutView.xaml
     /// </summary>
-    [Export(typeof(IAboutView)), PartCreationPolicy(CreationPolicy.NonShared)]
 
     public partial class AboutView : /* UserControl, */ IAboutView
     {

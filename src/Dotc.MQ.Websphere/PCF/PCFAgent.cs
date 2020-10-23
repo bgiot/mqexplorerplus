@@ -5,7 +5,6 @@
 //
 #endregion
 using System;
-using System.Collections;
 using IBM.WMQ;
 using System.Collections.Generic;
 

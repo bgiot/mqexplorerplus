@@ -6,11 +6,6 @@
 #endregion
 using Dotc.MQExplorerPlus.Core.Services;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel.Composition;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Dotc.MQExplorerPlus.Core.Models
 {
@@ -21,10 +16,9 @@ namespace Dotc.MQExplorerPlus.Core.Models
 
     }
 
-    [Export(typeof(AppSettings)), PartCreationPolicy(CreationPolicy.Shared)]
     public class AppSettings : IAppSettings
     {
-        [ImportingConstructor]
+
         public AppSettings(ISettingsProvider provider)
         {
             if (provider == null) throw new ArgumentNullException(nameof(provider));
