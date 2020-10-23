@@ -112,7 +112,8 @@
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Threading.Tasks.Extensions.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />     
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Configuration.ConfigurationManager.dll" />
       </Component>
       <Component Id="IBM" Guid="00328928-E188-490F-B2EB-4E72111B3359">
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)amqmdnet.dll" />
