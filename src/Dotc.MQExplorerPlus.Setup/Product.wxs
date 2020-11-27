@@ -51,13 +51,11 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
 
       <Directory Id="ProgramFilesFolder" >
-        <Directory Id="CompanyInstallationFolder" Name="$(var.ProductCompany)">
           <Directory Id="PRODUCTINSTALLDIRECTORY" Name="$(var.ProductName)" />
-        </Directory>
       </Directory>
 
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="CompanyProgramMenuFolder" Name="$(var.ProductCompany)">
+        <Directory Id="CompanyProgramMenuFolder" Name="$(var.ProductName)">
           <Component Id="ApplicationShortcut" Guid="{0ADA71F4-620A-4116-9A9F-44A8D5FC33B2}">
             <RemoveFolder Id="RemoveApplicationShortcut" Directory="CompanyProgramMenuFolder" On="uninstall"/>
             <RegistryValue Root="HKMU" Key="Software\$(var.ProductCompany)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
@@ -69,7 +67,6 @@
         </Component>
         </Directory>
       </Directory>
-
     </Directory>
 
   </Fragment>

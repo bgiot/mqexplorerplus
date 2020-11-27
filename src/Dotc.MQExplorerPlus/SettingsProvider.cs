@@ -28,7 +28,7 @@ namespace Dotc.MQExplorerPlus
         private string GetUserSettingsFilename()
         {
             var rootpath = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
-            var settingsFile = Path.Combine(rootpath, "Dot Consulting", "MQExplorerPlus.settings");
+            var settingsFile = Path.Combine(rootpath, "MQ Explorer Plus", "MQExplorerPlus.settings");
             return settingsFile;
 
         }
