@@ -28,7 +28,6 @@
     <Feature Id="ProductFeature" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
       <ComponentRef Id="ApplicationShortcut"/>
-      <ComponentRef Id="ProductLicenseFolder"/>
     </Feature>
 
     <UI>
@@ -52,13 +51,11 @@
     <Directory Id="TARGETDIR" Name="SourceDir">
 
       <Directory Id="ProgramFilesFolder" >
-        <Directory Id="CompanyInstallationFolder" Name="$(var.ProductCompany)">
           <Directory Id="PRODUCTINSTALLDIRECTORY" Name="$(var.ProductName)" />
-        </Directory>
       </Directory>
 
       <Directory Id="ProgramMenuFolder">
-        <Directory Id="CompanyProgramMenuFolder" Name="$(var.ProductCompany)">
+        <Directory Id="CompanyProgramMenuFolder" Name="$(var.ProductName)">
           <Component Id="ApplicationShortcut" Guid="{0ADA71F4-620A-4116-9A9F-44A8D5FC33B2}">
             <RemoveFolder Id="RemoveApplicationShortcut" Directory="CompanyProgramMenuFolder" On="uninstall"/>
             <RegistryValue Root="HKMU" Key="Software\$(var.ProductCompany)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
@@ -68,18 +65,6 @@
             WorkingDirectory="APPLICATIONROOTDIRECTORY"
           Target="[PRODUCTINSTALLDIRECTORY]Dotc.MQExplorerPlus.exe"/>
         </Component>
-        </Directory>
-      </Directory>
-
-      <Directory Id="CommonAppDataFolder" Name="ComAppDt">
-        <Directory Id="AppDataCompanyFolder" Name="$(var.ProductCompany)">
-          <Directory Id="AppDataProductFolder" Name="$(var.ProductName)">
-            <Component Id="ProductLicenseFolder" Guid="5CF9C3B8-A406-4FAC-9D74-1A95FDD6E656" Permanent="yes">
-              <CreateFolder Directory="AppDataProductFolder">
-                <Permission User="Everyone" GenericAll="yes"/>
-              </CreateFolder>
-            </Component>
-          </Directory>
         </Directory>
       </Directory>
     </Directory>
