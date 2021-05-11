@@ -4,6 +4,9 @@
   <?define ProductVersion="1.1.0" ?>
   <?define ProductCompany = "Dot Consulting" ?>
 
-  <?define ProductUpgradeCode = "C81D82AC-4F97-4212-8133-10CD5B4DACF9" ?>
+  <!--<?define ProductUpgradeCode = "C81D82AC-4F97-4212-8133-10CD5B4DACF9" ?> Beta --> 
+  <?define ProductUpgradeCode = "33333625-8562-4C5A-BD75-84FA45DDAAA8" ?>
+  
+
 
 </Include>
