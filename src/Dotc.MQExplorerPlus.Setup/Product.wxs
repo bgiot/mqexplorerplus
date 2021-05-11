@@ -95,7 +95,7 @@
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.Toolkit.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)ICSharpCode.AvalonEdit.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)NLog.dll" />
+        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)NLog.dll" />F
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Newtonsoft.Json.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Windows.Interactivity.dll" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Expression.Interactions.dll" />

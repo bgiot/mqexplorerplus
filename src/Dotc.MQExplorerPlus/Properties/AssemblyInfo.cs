@@ -14,7 +14,7 @@ using System.Windows;
 [assembly: AssemblyTitle("Dotc.MQExplorerPlus")]
 [assembly: AssemblyDescription("")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyProduct("MQ Explorer Plus Beta")]
+[assembly: AssemblyProduct("MQ Explorer Plus")]
 [assembly: AssemblyCulture("")]
 
 
