@@ -42,7 +42,8 @@ namespace Dotc.MQExplorerPlus
 
         private Window GetWindow() 
         {
-            return System.Windows.Application.Current.MainWindow;
+            return null;
+            //return System.Windows.Application.Current.MainWindow;
         }
 
         /// <summary>
