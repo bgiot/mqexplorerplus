@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Include>
   <?define ProductName = "MQ Explorer Plus" ?>
-  <?define ProductVersion="1.1.1" ?>
+  <?define ProductVersion="1.1.2" ?>
   <?define ProductCompany = "Dot Consulting" ?>
 
   <!--<?define ProductUpgradeCode = "C81D82AC-4F97-4212-8133-10CD5B4DACF9" ?> Beta --> 
