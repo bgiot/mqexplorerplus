@@ -40,7 +40,7 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
         void OpenChannelResetParametersView(Action<ChannelResetParameters> callback);
         void OpenChannelResolveParametersView(Action<ChannelResolveParameters> callback);
 
-        void OpenDumpCreationSettingsView(QueueInfo queue, Action<string, DumpCreationSettings> callback);
+        void OpenDumpCreationSettingsView(QueueInfo queue, int selectedCount, Action<string, DumpCreationSettings> callback);
         void OpenDumpLoadSettingsView(QueueInfo queue, Action<string, DumpLoadSettings> callback);
         void OpenExportMessagesSettingsView(QueueInfo queue, int messagesCount, Action<string, CsvExportSettings> callback);
 
@@ -664,10 +664,10 @@ namespace Dotc.MQExplorerPlus.Core.Controllers
             });
         }
 
-        public void OpenDumpCreationSettingsView(QueueInfo queue, Action<string, DumpCreationSettings> callback)
+        public void OpenDumpCreationSettingsView(QueueInfo queue, int selectedCount, Action<string, DumpCreationSettings> callback)
         {
             var vm = GetViewModel<DumpCreationSettingsViewModel>();
-            vm.Initialize(queue);
+            vm.Initialize(queue, selectedCount);
 
             ViewService.ShowModalView(vm, () =>
             {

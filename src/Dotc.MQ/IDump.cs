@@ -58,13 +58,14 @@ namespace Dotc.MQ
             DataWidth = 25;
         }
 
-        public IdMatching IdFilter { get; set; }
+        public IdMatching[] IdFilters { get; set; }
         public bool LeaveMessages { get; set; }
         public bool WriteHeader { get; set; }
         public bool WriteMessageIndex { get; set; }
         public bool WriteMessageDescriptor { get; set; }
         public bool UseTransaction { get; set; }
         public int TransactionSize { get; set; }
+        public bool SelectedMessagesOnly {get;set;}
 
         public Conversion Converter { get; set; }
 

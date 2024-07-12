@@ -79,28 +79,30 @@ namespace Dotc.MQ.Websphere
 
                 MQMessage message = null;
                 bool transactionOpened = false;
+                int filterIndex = 0;
+                IdMatching idFilter = null;
+                bool withFilter = context.Settings.IdFilters != null && context.Settings.IdFilters.Length > 0;
 
-                using (var reader = new MQReader(_qSource.NewConnectionCore(), context.Settings.UseTransaction, context.Settings.IdFilter, context.Settings.Converter))
+                using (var reader = new MQReader(_qSource.NewConnectionCore(), context.Settings.UseTransaction, context.Settings.Converter))
                 {
                     var writer = new DumpWriter(context.Output, context.Settings, _qSource.QueueManager.Name, _qSource.Name, _culture, _encoding);
-                    while (reader.Read(ref message))
+
+                    while (true)
                     {
-                        if (ct.IsCancellationRequested)
-                            break;
-
-                        // TODO : Implement filter logic 
-                        bool addIt = true;
-
-
-                        if (addIt)
+                        idFilter = withFilter ? context.Settings.IdFilters[filterIndex++] : null;
+                        bool msgFound = reader.Read(ref message, idFilter);
+                        if (msgFound)
                         {
+                        
+                            if (ct.IsCancellationRequested)
+                            break;
 
                             writer.WriteMessage(message);
 
                             if (!context.Settings.LeaveMessages)
                             {
                                 // Force remove of the message
-                                if (reader.Read(ref message, true) && context.Settings.UseTransaction)
+                                if (reader.Remove(ref message) && context.Settings.UseTransaction)
                                     transactionOpened = true;
 
                                 if (context.Settings.UseTransaction && context.Settings.TransactionSize > 0 && writer.Counter % context.Settings.TransactionSize == 0)
@@ -111,10 +113,19 @@ namespace Dotc.MQ.Websphere
                                 }
                             }
 
+                            progress?.Report(writer.Counter);
+
+                            if (withFilter && filterIndex == context.Settings.IdFilters.Length)
+                                break;
+
                         }
-
-                        progress?.Report(writer.Counter);
-
+                        else
+                        {
+                            if (withFilter && filterIndex < context.Settings.IdFilters.Length)
+                                continue;
+                            else
+                                break;
+                        }
                     }
 
                     if (!context.Settings.LeaveMessages && context.Settings.UseTransaction && transactionOpened)
@@ -717,13 +728,11 @@ namespace Dotc.MQ.Websphere
         private WsQueue _queue;
 
         internal bool UseTransaction { get; }
-        internal IdMatching IdFilter { get; }
         internal Conversion Converter { get; }
 
-        internal MQReader(WsQueue queue, bool useTransaction, IdMatching filter, Conversion converter)
+        internal MQReader(WsQueue queue, bool useTransaction, Conversion converter)
         {
             _queue = queue;
-            IdFilter = filter;
             Converter = converter;
             UseTransaction = useTransaction;
             var oqm = OpenQueueMode.ForBrowseAndRead;
@@ -737,7 +746,39 @@ namespace Dotc.MQ.Websphere
 
         public int CurrentIndex { get; private set; }
 
-        internal bool Read(ref MQMessage msg, bool force = false)
+        internal bool Remove(ref MQMessage msg)
+        {
+            var gmo = new MQGetMessageOptions()
+            {
+                Options = MQC.MQGMO_NO_WAIT + MQC.MQGMO_PROPERTIES_AS_Q_DEF,
+                Version = 1,
+                MatchOptions = MQC.MQMO_MATCH_MSG_ID + MQC.MQMO_MATCH_CORREL_ID,
+                GroupStatus = MQC.MQGS_NOT_IN_GROUP,
+                SegmentStatus = MQC.MQSS_NOT_A_SEGMENT,
+                Segmentation = MQC.MQSEG_INHIBITED,
+            };
+            gmo.Options |= MQC.MQGMO_MSG_UNDER_CURSOR;
+            if (UseTransaction)
+                gmo.Options |= MQC.MQGMO_SYNCPOINT;
+            else gmo.Options |= MQC.MQGMO_NO_SYNCPOINT;
+
+            try
+            {
+                _IbmQueue.Get(msg, gmo);
+                return true;
+            }
+            catch (MQException exc)
+            {
+                if (exc.ReasonCode == MQC.MQRC_NO_MSG_AVAILABLE
+                    || exc.ReasonCode == MQC.MQRC_NOT_CONVERTED)
+                {
+                    return false;
+                }
+                throw;
+            }
+        }
+
+        internal bool Read(ref MQMessage msg, IdMatching filter )
         {
             var gmo = new MQGetMessageOptions()
             {
@@ -749,47 +790,36 @@ namespace Dotc.MQ.Websphere
                 Segmentation = MQC.MQSEG_INHIBITED,
             };
 
-            if (force)
+            gmo.Options |= MQC.MQGMO_BROWSE_NEXT | MQC.MQGMO_NO_SYNCPOINT;
+
+            msg = new MQMessage();
+
+            if (filter != null)
             {
-                gmo.Options |= MQC.MQGMO_MSG_UNDER_CURSOR;
-                if (UseTransaction)
-                    gmo.Options |= MQC.MQGMO_SYNCPOINT;
-                else gmo.Options |= MQC.MQGMO_NO_SYNCPOINT;
+                if (filter.Type == IdMatching.IdType.MessageId)
+                {
+                    msg.MessageId = filter.Value;
+                }
+                if (filter.Type == IdMatching.IdType.CorrelationId)
+                {
+                    msg.CorrelationId = filter.Value;
+                }
+                if (filter.Type == IdMatching.IdType.GroupId)
+                {
+                    msg.GroupId = filter.Value;
+                    gmo.MatchOptions |= MQC.MQMO_MATCH_GROUP_ID;
+                    if (gmo.Version < 2) gmo.Version = 2;
+                }
             }
-            else
+
+            if (Converter != null)
             {
-
-                gmo.Options |= MQC.MQGMO_BROWSE_NEXT | MQC.MQGMO_NO_SYNCPOINT;
-
-                msg = new MQMessage();
-
-                if (IdFilter != null)
-                {
-                    if (IdFilter.Type == IdMatching.IdType.MessageId)
-                    {
-                        msg.MessageId = IdFilter.Value;
-                    }
-                    if (IdFilter.Type == IdMatching.IdType.CorrelationId)
-                    {
-                        msg.CorrelationId = IdFilter.Value;
-                    }
-                    if (IdFilter.Type == IdMatching.IdType.GroupId)
-                    {
-                        msg.GroupId = IdFilter.Value;
-                        gmo.MatchOptions |= MQC.MQMO_MATCH_GROUP_ID;
-                        if (gmo.Version < 2) gmo.Version = 2;
-                    }
-                }
-
-                if (Converter != null)
-                {
-                    gmo.Options |= MQC.MQGMO_CONVERT;
-                    msg.Encoding = Converter.Encoding;
-                    msg.CharacterSet = Converter.CodedCharSetId;
-                }
-
-                CurrentIndex++;
+                gmo.Options |= MQC.MQGMO_CONVERT;
+                msg.Encoding = Converter.Encoding;
+                msg.CharacterSet = Converter.CodedCharSetId;
             }
+
+            CurrentIndex++;
 
             try
             {

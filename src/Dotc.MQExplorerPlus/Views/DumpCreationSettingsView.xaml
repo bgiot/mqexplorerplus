@@ -30,12 +30,14 @@
                 </Grid.RowDefinitions>
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
                     <ColumnDefinition Width="*" />
                 </Grid.ColumnDefinitions>
                 <Label Grid.Row="0"
                        Grid.Column="0">Queue name:</Label>
                 <TextBox Grid.Row="0"
                          Grid.Column="1"
+                         Grid.ColumnSpan="2"
                          IsReadOnly="True"
                          Height="22"
                          Text="{Binding Queue.Name, Mode=OneWay}" />
@@ -43,16 +45,28 @@
                        Grid.Column="0">Connection:</Label>
                 <TextBox Grid.Row="1"
                          Grid.Column="1"
+                         Grid.ColumnSpan="2"
                          IsReadOnly="True"
                          Height="22"
                          Text="{Binding Queue.QueueManager.ConnectionInfo, Mode=OneWay}" />
                 <Label Grid.Row="2"
-                       Grid.Column="0"># of messages:</Label>
+                       Grid.Column="0">Queue depth:</Label>
                 <TextBox Grid.Row="2"
                          Grid.Column="1"
+                         Width="100"
                          IsReadOnly="True"
                          Height="22"
                          Text="{Binding Queue.Depth, Mode=OneWay}" />
+                <StackPanel Orientation="Horizontal" VerticalAlignment="Center" Grid.Row="2"
+                          Grid.Column="2"
+                            IsEnabled="{Binding OnlySelectedMessagesEnabled}">
+                    <CheckBox 
+                          Margin="5 0 5 0"
+                          VerticalAlignment="Center"                          
+                          IsChecked="{Binding OnlySelectedMessages}"/>
+                    <Label Content="{Binding SelectedMessageCount}" ContentStringFormat="Only selected messages ({0})" />
+                    
+                </StackPanel>
             </Grid>
         </GroupBox>
         <GroupBox Header="Destination File"
@@ -148,12 +162,12 @@
                         </TextBox>
                         <TextBlock VerticalAlignment="Center"
                                    Margin="5 0 0 0">(default is MQENC_NATIVE)</TextBlock>
-                    </StackPanel>                    
+                    </StackPanel>
                 </Grid>
-            </GroupBox>   
-         <GroupBox Header="Write Settings" Grid.Column="1">
-            <Grid Margin="5" >
-                <Grid.RowDefinitions>
+            </GroupBox>
+            <GroupBox Header="Write Settings" Grid.Column="1">
+                <Grid Margin="5" >
+                    <Grid.RowDefinitions>
                         <RowDefinition  Height="20" />
                         <RowDefinition  Height="20" />
                         <RowDefinition  Height="20" />
@@ -161,11 +175,11 @@
                         <RowDefinition  Height="20" />
                     </Grid.RowDefinitions>
 
-                <CheckBox Grid.Row="0" IsChecked="{Binding WriteHeader}"
+                    <CheckBox Grid.Row="0" IsChecked="{Binding WriteHeader}"
                           Height="22">Write file header</CheckBox>
-                <CheckBox Grid.Row="1" IsChecked="{Binding WriteMessageIndex}"
+                    <CheckBox Grid.Row="1" IsChecked="{Binding WriteMessageIndex}"
                           Height="22">Write message index</CheckBox>
-                <CheckBox Grid.Row="2"
+                    <CheckBox Grid.Row="2"
                           IsChecked="{Binding WriteMessageDescriptor}"
                           Height="22">Write message descriptor</CheckBox>
                     <CheckBox Grid.Row="3"
@@ -175,7 +189,7 @@
                               IsChecked="{Binding AddAsciiColumn}"
                               Height="22">Add ASCII column to HEX</CheckBox>
                 </Grid>
-        </GroupBox>           
+            </GroupBox>
         </Grid>
 
     </Grid>
