@@ -5,9 +5,12 @@
 //
 #endregion
 using System;
+using System.Runtime.InteropServices.WindowsRuntime;
 using System.Windows;
+using Dotc.MQExplorerPlus.Core.Controllers;
 using Dotc.MQExplorerPlus.Core.Models;
 using Dotc.MQExplorerPlus.Core.Services;
+using Dotc.MQExplorerPlus.Core.Views;
 using Dotc.Wpf;
 using MessageBox = Xceed.Wpf.Toolkit.MessageBox;
 
@@ -17,9 +20,12 @@ namespace Dotc.MQExplorerPlus
     public sealed class MessageService : IMessageService
     {
         private static MessageBoxResult MessageBoxResult => MessageBoxResult.None;
+        private Window _MainWindow;
 
-        public MessageService()
+        public MessageService( IShellView shellView )
         {
+            _MainWindow = (Window)shellView;
+
         }
 
         public event EventHandler Before;
@@ -42,8 +48,7 @@ namespace Dotc.MQExplorerPlus
 
         private Window GetWindow() 
         {
-            return null;
-            //return System.Windows.Application.Current.MainWindow;
+            return _MainWindow; 
         }
 
         /// <summary>
