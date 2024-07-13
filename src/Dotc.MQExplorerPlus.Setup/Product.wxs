@@ -1,25 +1,10 @@
-<?xml version="1.0" encoding="UTF-8"?>
+﻿<?include $(sys.CURRENTDIR)Variables.wxi ?>
 
-<?include $(sys.CURRENTDIR)Variables.wxi ?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs" xmlns:netfx="http://wixtoolset.org/schemas/v4/wxs/netfx" xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
-<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi"
-     xmlns:netfx="http://schemas.microsoft.com/wix/NetFxExtension">
+  <Package Name="$(var.ProductName) $(var.ProductVersion)" Language="1033" Version="$(var.ProductVersion)" Manufacturer="$(var.ProductCompany)" UpgradeCode="$(var.ProductUpgradeCode)" InstallerVersion="300">
 
-  <Product
-        Id="*"
-        Name="$(var.ProductName) $(var.ProductVersion)"
-        Language="1033"
-        Version="$(var.ProductVersion)"
-        Manufacturer="$(var.ProductCompany)"
-        UpgradeCode="$(var.ProductUpgradeCode)">
-
-
-    <Package
-        InstallerVersion="300"
-        Compressed="yes"
-        InstallScope="perMachine"
-        Manufacturer="$(var.ProductCompany)"
-        Platform="x86" InstallPrivileges="elevated"/>
+    <SummaryInformation Manufacturer="$(var.ProductCompany)" />
 
     <MajorUpgrade AllowSameVersionUpgrades="yes" DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
 
@@ -27,49 +12,38 @@
 
     <Feature Id="ProductFeature" Level="1">
       <ComponentGroupRef Id="ProductComponents" />
-      <ComponentRef Id="ApplicationShortcut"/>
+      <ComponentRef Id="ApplicationShortcut" />
     </Feature>
 
     <UI>
-      <UIRef Id="WixUI_InstallDir" />
-      <Publish Dialog="ExitDialog"
-          Control="Finish"
-          Event="DoAction"
-          Value="LaunchApplication">WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed</Publish>
+      <ui:WixUI Id="WixUI_InstallDir" />
+      <Publish Dialog="ExitDialog" Control="Finish" Event="DoAction" Value="LaunchApplication" Condition="WIXUI_EXITDIALOGOPTIONALCHECKBOX = 1 and NOT Installed" />
     </UI>
     <Property Id="WIXUI_EXITDIALOGOPTIONALCHECKBOXTEXT" Value="Launch $(var.ProductName)" />
     <Property Id="WixShellExecTarget" Value="[#MainExeFile]" />
-    <CustomAction Id="LaunchApplication" BinaryKey="WixCA" DllEntry="WixShellExec" Impersonate="yes" />
+    <CustomAction Id="LaunchApplication" DllEntry="WixShellExec" Impersonate="yes" BinaryRef="Wix4UtilCA_X86" />
     <WixVariable Id="WixUILicenseRtf" Value="$(var.Dotc.MQExplorerPlus.TargetDir)EULA.rtf" />
-    <WixVariable Id="WixUIBannerBmp" Value="Resources\WixUIBanner.bmp"/>
-    <WixVariable Id="WixUIDialogBmp" Value="Resources\WixUIDialog.bmp"/>
+    <WixVariable Id="WixUIBannerBmp" Value="Resources\WixUIBanner.bmp" />
+    <WixVariable Id="WixUIDialogBmp" Value="Resources\WixUIDialog.bmp" />
     <Property Id="WIXUI_INSTALLDIR" Value="PRODUCTINSTALLDIRECTORY" />
-  </Product>
+  </Package>
 
   <Fragment>
 
-    <Directory Id="TARGETDIR" Name="SourceDir">
-
-      <Directory Id="ProgramFilesFolder" >
+      <StandardDirectory Id="ProgramFilesFolder">
           <Directory Id="PRODUCTINSTALLDIRECTORY" Name="$(var.ProductName)" />
-      </Directory>
+      </StandardDirectory>
 
-      <Directory Id="ProgramMenuFolder">
+      <StandardDirectory Id="ProgramMenuFolder">
         <Directory Id="CompanyProgramMenuFolder" Name="$(var.ProductName)">
           <Component Id="ApplicationShortcut" Guid="{0ADA71F4-620A-4116-9A9F-44A8D5FC33B2}">
-            <RemoveFolder Id="RemoveApplicationShortcut" Directory="CompanyProgramMenuFolder" On="uninstall"/>
-            <RegistryValue Root="HKMU" Key="Software\$(var.ProductCompany)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes"/>
-          <Shortcut Id="ApplicationStartMenuShortcut" Directory="CompanyProgramMenuFolder"
-            Name="$(var.ProductName)"
-            Description="$(var.ProductName)"
-            WorkingDirectory="APPLICATIONROOTDIRECTORY"
-          Target="[PRODUCTINSTALLDIRECTORY]Dotc.MQExplorerPlus.exe"/>
+            <RemoveFolder Id="RemoveApplicationShortcut" Directory="CompanyProgramMenuFolder" On="uninstall" />
+            <RegistryValue Root="HKMU" Key="Software\$(var.ProductCompany)\$(var.ProductName)" Name="installed" Type="integer" Value="1" KeyPath="yes" />
+             <Shortcut Id="ApplicationStartMenuShortcut" Directory="CompanyProgramMenuFolder" Name="$(var.ProductName)" Description="$(var.ProductName)" WorkingDirectory="CompanyProgramMenuFolder" Target="[PRODUCTINSTALLDIRECTORY]Dotc.MQExplorerPlus.exe" />
         </Component>
         </Directory>
-      </Directory>
-    </Directory>
-
-  </Fragment>
+      </StandardDirectory>
+    </Fragment>
 
   <Fragment>
     <ComponentGroup Id="ProductComponents" Directory="PRODUCTINSTALLDIRECTORY">
@@ -79,41 +53,41 @@
         </File>
       </Component>
       <Component Id="Libs" Guid="13283D60-AA06-483D-B8E3-91B730C16A06">
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Common.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQ.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQ.Websphere.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Mvvm.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Wpf.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQExplorerPlus.Core.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetPath).config" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.Common.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Common.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.MQ.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQ.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.MQ.Websphere.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQ.Websphere.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.Mvvm.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Mvvm.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.Wpf.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.Wpf.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Dotc.MQExplorerPlus.Core.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Dotc.MQExplorerPlus.Core.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetPath_.config" Source="$(var.Dotc.MQExplorerPlus.TargetPath).config" />
         <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)EULA.rtf" Id="EulaFile" />
       </Component>
       <Component Id="Packages" Guid="105294DD-843C-424A-9FE7-12194CA7AB8E">
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.Toolkit.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)ICSharpCode.AvalonEdit.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)NLog.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Newtonsoft.Json.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Windows.Interactivity.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Expression.Interactions.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Core.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Interfaces.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Linq.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.PlatformServices.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Windows.Threading.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Threading.Tasks.Extensions.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Configuration.ConfigurationManager.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Xceed.Wpf.AvalonDock.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Xceed.Wpf.AvalonDock.Themes.Aero.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Aero.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Xceed.Wpf.AvalonDock.Themes.Metro.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.Metro.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Xceed.Wpf.AvalonDock.Themes.VS2010.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.AvalonDock.Themes.VS2010.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Xceed.Wpf.Toolkit.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Xceed.Wpf.Toolkit.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_ICSharpCode.AvalonEdit.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)ICSharpCode.AvalonEdit.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_NLog.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)NLog.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Newtonsoft.Json.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Newtonsoft.Json.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Windows.Interactivity.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Windows.Interactivity.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Microsoft.Expression.Interactions.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Expression.Interactions.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.Core.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Core.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.Interfaces.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Interfaces.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.Linq.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Linq.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.PlatformServices.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.PlatformServices.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Reactive.Windows.Threading.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Reactive.Windows.Threading.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Microsoft.Bcl.AsyncInterfaces.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Bcl.AsyncInterfaces.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Microsoft.Extensions.DependencyInjection.Abstractions.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.Abstractions.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_Microsoft.Extensions.DependencyInjection.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)Microsoft.Extensions.DependencyInjection.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Threading.Tasks.Extensions.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Threading.Tasks.Extensions.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Runtime.CompilerServices.Unsafe.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Runtime.CompilerServices.Unsafe.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_System.Configuration.ConfigurationManager.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)System.Configuration.ConfigurationManager.dll" />
       </Component>
       <Component Id="IBM" Guid="00328928-E188-490F-B2EB-4E72111B3359">
-        <File Source="$(var.Dotc.MQExplorerPlus.TargetDir)amqmdnet.dll" />
+        <File Id="___var.Dotc.MQExplorerPlus.TargetDir_amqmdnet.dll" Source="$(var.Dotc.MQExplorerPlus.TargetDir)amqmdnet.dll" />
       </Component>
     </ComponentGroup>
   </Fragment>

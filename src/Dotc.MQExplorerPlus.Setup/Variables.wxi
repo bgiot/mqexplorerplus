@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
-<Include>
+﻿<Include xmlns="http://wixtoolset.org/schemas/v4/wxs">
   <?define ProductName = "MQ Explorer Plus" ?>
   <?define ProductVersion="1.2.0" ?>
   <?define ProductCompany = "Dot Consulting" ?>
