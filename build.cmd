@@ -1,19 +1,23 @@
---set msBuildDir="%ProgramFiles(X86)%\MSBuild\14.0\bin"
+set version=1.2.0
+
 set vswhere="%ProgramFiles(X86)%\Microsoft Visual Studio\Installer\vswhere.exe"
 
-for /f "usebackq tokens=1* delims=: " %%i in (`%vswhere% -latest -requires Microsoft.Component.MSBuild`) do (
-  if /i "%%i"=="installationPath" set InstallDir=%%j
+for /f "usebackq tokens=*" %%i in (`%vswhere% -latest -requires Microsoft.Component.MSBuild -find MSBuild\**\Bin\MSBuild.exe`) do  (
+  set MSBUILD=%%i
 )
+  
+mkdir artifacts
 
-if exist "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" (
+"%MSBUILD%" src\Dotc.MQExplorerPlus\Dotc.MQExplorerPlus.csproj /t:clean;rebuild /p:Configuration=Release 
 
-  .nuget\nuget.exe restore src\MQExplorerPlus.sln
-  
-  mkdir artifacts
-  
-  "%InstallDir%\MSBuild\15.0\Bin\MSBuild.exe" src\Dotc.MQExplorerPlus.Setup\Dotc.MQExplorerPlus.Setup.wixproj /t:Rebuild  /p:Configuration=Release /l:FileLogger,Microsoft.Build.Engine;logfile=artifacts\Manual_MSBuild_MSI_LOG.log
-  
-)
+set artifacts=%~dp0artifacts
+
+pushd src\Dotc.MQExplorerPlus\bin\Release\net48
+
+tar.exe -a -c -f %artifacts%\MQExplorerPlus%version%.zip *.*
+
+popd
+
 
 
 
