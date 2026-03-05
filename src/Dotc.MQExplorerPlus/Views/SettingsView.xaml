@@ -35,6 +35,7 @@
             </wtk:PropertyGrid.EditorDefinitions>
             <wtk:PropertyGrid.PropertyDefinitions>
                 <wtk:PropertyDefinition TargetProperties="AutoRefreshInterval" Category="1. General" DisplayName="Auto Refresh Interval (sec)"/>
+                <wtk:PropertyDefinition TargetProperties="EBCDICCodePage" Category="1. General" DisplayName="EBCDIC Code Page"/>
                 <wtk:PropertyDefinition TargetProperties="BrowseLimit" Category="2. Queues" DisplayName="Browse Limit" />
                 <!--<wtk:PropertyDefinition TargetProperties="BrowseMultiThread"
                                         Category="2. Queues"

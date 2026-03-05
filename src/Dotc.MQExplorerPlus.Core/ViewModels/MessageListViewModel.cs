@@ -28,6 +28,7 @@ using System.ComponentModel.DataAnnotations;
 using Nito.AsyncEx;
 using Dotc.Wpf.Controls.HexViewer;
 using System.Windows.Interop;
+using System.Text;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
@@ -344,7 +345,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                 {
                     ps.SetTitle("Generating queue dump...");
 
-                    using (var context = new DumpCreationContext(filename, settings))
+                    Encoding ebcdicEncoding = Encoding.GetEncoding(App.UserSettings.EBCDICCodePage);
+
+                    using (var context = new DumpCreationContext(filename, settings, ebcdicEncoding))
                     {
                         Queue.QueueSource.DumpEngine.CreateDump(context, ps.CancellationToken, ps.Progress);
 
@@ -393,7 +396,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                         ps.SetTitle("Loading dump...");
                         ps.SetRange(0, previewCount);
 
-                        using (var context = new DumpLoadContext(filename, settings))
+                        Encoding ebcdicEncoding = Encoding.GetEncoding(App.UserSettings.EBCDICCodePage);
+
+                        using (var context = new DumpLoadContext(filename, settings, ebcdicEncoding))
                         {
                             countMsgLoaded = Queue.QueueSource.DumpEngine.LoadDump(context, ps.CancellationToken, ps.Progress);
                         }

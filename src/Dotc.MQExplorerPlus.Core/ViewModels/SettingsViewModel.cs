@@ -68,6 +68,10 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             {
                 Source.MaxRecentConnections = Settings.MaxRecentConnections;
             }
+            if (Settings.EBCDICCodePage != Source.EBCDICCodePage)
+            {
+                Source.EBCDICCodePage = Settings.EBCDICCodePage;
+            }
         }
 
 

@@ -12,10 +12,9 @@
              xmlns:i="http://schemas.microsoft.com/expression/2010/interactivity"
              xmlns:behaviors="clr-namespace:Dotc.MQExplorerPlus.Behaviors"
              mc:Ignorable="d"
-             d:DesignHeight="300"
              d:DesignWidth="500"
              Width="500"
-             Height="350"
+             Height="404"
              d:DataContext="{d:DesignInstance vm:DumpLoadSettingsViewModel}">
     <Grid Margin="10">
         <Grid.RowDefinitions>
@@ -87,6 +86,7 @@
                     <RowDefinition />
                     <RowDefinition />
                     <RowDefinition />
+                    <RowDefinition />
                 </Grid.RowDefinitions>
                 <StackPanel Grid.Row="0"
                             Orientation="Vertical">
@@ -116,6 +116,9 @@
                         </i:Interaction.Behaviors>
                     </TextBox>
                     <TextBlock VerticalAlignment="Center" Margin="5 0 0 0">(default is 100)</TextBlock>
+                </StackPanel>
+                <StackPanel Grid.Row="2" Margin="0 10 0 0" Height="22" Orientation="Horizontal">
+                    <CheckBox IsChecked="{Binding ConvertASCIIHexStringToEBCDIC}" VerticalAlignment="Center" Margin="0 0 10 0">Hex String from ASCII to EBCDIC</CheckBox>
                 </StackPanel>
             </Grid>
         </GroupBox>

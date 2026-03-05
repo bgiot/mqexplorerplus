@@ -54,15 +54,51 @@ namespace Dotc.MQ
             //return val - (val < 58 ? 48 : (val < 97 ? 55 : 87));
         }
 
-        public static string ToHexString(this IEnumerable<byte> data, bool addPrefix = false)
+        public enum HexStringConversion
+        {
+            None,
+            EBCDIC_ASCII,
+            ASCII_EBCDIC
+        }
+
+        public static byte[] ConvertHexString(this byte[] data, Encoding ebcdicEncoding, HexStringConversion conversion = HexStringConversion.None)
+        {
+            switch (conversion)
+            {
+                case HexStringConversion.ASCII_EBCDIC:
+                    return Encoding.Convert(Encoding.ASCII, ebcdicEncoding, data);
+                case HexStringConversion.EBCDIC_ASCII:
+                    return Encoding.Convert(ebcdicEncoding, Encoding.ASCII, data);
+                default: return data;
+            }
+        }
+
+
+        public static string ToHexString(this byte[] data, bool addPrefix = false)
         {
             if (data == null) throw new ArgumentNullException(nameof(data));
             var sb = new StringBuilder();
+            if (addPrefix)
+            {
+                sb.Append("0x");
+            }
+
             foreach (var b in data)
             {
-                sb.AppendFormat(CultureInfo.InvariantCulture,  "{1}{0:X2}", b, addPrefix ? "0x" : "");
+                sb.AppendFormat(CultureInfo.InvariantCulture, "{0:X2}", b);
             }
             return sb.ToString();
+        }
+
+        public static string ToHexString(this byte[] data, Encoding ebcdicEncoding, bool addPrefix = false,  HexStringConversion conversion = HexStringConversion.None)
+        {
+            if (data == null) throw new ArgumentNullException(nameof(data));
+
+
+            byte[] toDump = data.ConvertHexString(ebcdicEncoding, conversion);
+
+            return toDump.ToHexString(addPrefix);
+
         }
 
         public static string ToString(this byte[] data, Encoding encoding)

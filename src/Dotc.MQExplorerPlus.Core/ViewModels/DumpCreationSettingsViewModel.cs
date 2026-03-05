@@ -77,7 +77,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                 WriteMessageDescriptor = WriteMessageDescriptor,
                 AddAsciiColumn = AddAsciiColumn,
                 AsciiFile = AsciiFile,
-                SelectedMessagesOnly = OnlySelectedMessagesEnabled && OnlySelectedMessages
+                SelectedMessagesOnly = OnlySelectedMessagesEnabled && OnlySelectedMessages,
+                ConvertEBCDICHexStringToASCII = ConvertEBCDICHexStringToASCII
             };
             if (UseTransaction)
             {
@@ -169,5 +170,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         }
         public int? CCSID { get; set; }
         public int? Encoding { get; set; }
+        public bool ConvertEBCDICHexStringToASCII { get; set; }
+
+
     }
 }

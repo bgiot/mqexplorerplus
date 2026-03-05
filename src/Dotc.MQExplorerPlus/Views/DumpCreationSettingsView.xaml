@@ -173,6 +173,7 @@
                         <RowDefinition  Height="20" />
                         <RowDefinition  Height="20" />
                         <RowDefinition  Height="20" />
+                        <RowDefinition  Height="20" />
                     </Grid.RowDefinitions>
 
                     <CheckBox Grid.Row="0" IsChecked="{Binding WriteHeader}"
@@ -188,6 +189,9 @@
                     <CheckBox Grid.Row="4"
                               IsChecked="{Binding AddAsciiColumn}"
                               Height="22">Add ASCII column to HEX</CheckBox>
+                    <CheckBox Grid.Row="5"
+                              IsChecked="{Binding ConvertEBCDICHexStringToASCII}"
+                              Height="22">Hex String from EBCDIC to ASCII</CheckBox>
                 </Grid>
             </GroupBox>
         </Grid>
