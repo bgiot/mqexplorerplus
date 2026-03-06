@@ -585,7 +585,7 @@ namespace Dotc.MQ.Websphere
                             md.Persistence = int.Parse(data, _culture);
                             break;
                         case "MSI":
-                            md.MsgId = data.HexStringToBytes();
+                            md.MsgId = ConvertHexStringBytes(data, ebcdicEncoding, conversion);
                             break;
                         case "COI":
                             md.CorrelId = ConvertHexStringBytes(data, ebcdicEncoding, conversion);
@@ -1059,7 +1059,7 @@ namespace Dotc.MQ.Websphere
             _sw.WriteLine("A FMT {0}", md.Format.ToString(_encoding));
             _sw.WriteLine("A PRI {0}", md.Priority.ToString(_culture));
             _sw.WriteLine("A PER {0}", md.Persistence.ToString(_culture));
-            _sw.WriteLine("A MSI {0}", ToHexStringNotConverted(md.MsgId));
+            _sw.WriteLine("A MSI {0}", ToHexStringConverted(md.MsgId));
             _sw.WriteLine("A COI {0}", ToHexStringConverted(md.CorrelId));
             _sw.WriteLine("A BOC {0}", md.BackoutCount.ToString(_culture));
             _sw.WriteLine("A RTQ {0}", md.ReplyToQueue.ToString(_encoding));
