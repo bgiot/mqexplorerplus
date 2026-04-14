@@ -71,6 +71,7 @@ namespace Dotc.MQExplorerPlus.Configuration
         internal void Set(IUserSettings settings)
         {
             General.AutoRefreshInterval = settings.AutoRefreshInterval;
+            General.EBCDICCodePage = settings.EBCDICCodePage;
             Messages.BrowseLimit = settings.BrowseLimit;
             Messages.PutPriority = settings.PutPriority;
             Connection.Port = settings.Port;
@@ -108,6 +109,8 @@ namespace Dotc.MQExplorerPlus.Configuration
         {
             get { return new ObservableCollection<RecentConnection>(GetRecentConnectionsInternal()); }
         }
+
+        public string EBCDICCodePage => General.EBCDICCodePage;
 
         private List<RecentConnection> GetRecentConnectionsInternal()
         {

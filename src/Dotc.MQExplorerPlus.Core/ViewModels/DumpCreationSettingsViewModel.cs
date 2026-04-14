@@ -31,13 +31,20 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             WriteMessageDescriptor = true;
         }
 
-        public void Initialize(QueueInfo queue)
+        public void Initialize(QueueInfo queue, int selectedCount)
         {
             Queue = queue;
+            if (selectedCount > 0)
+            {
+                OnlySelectedMessagesEnabled = true;
+                SelectedMessageCount = selectedCount;
+            }
         }
 
         public ICommand SelectFileCommand { get; private set; }
 
+        public bool OnlySelectedMessagesEnabled { get; private set; }
+        public int SelectedMessageCount { get; private set; }
 
         public QueueInfo Queue { get; private set; }
 
@@ -69,7 +76,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                 WriteMessageIndex = WriteMessageIndex,
                 WriteMessageDescriptor = WriteMessageDescriptor,
                 AddAsciiColumn = AddAsciiColumn,
-                AsciiFile = AsciiFile
+                AsciiFile = AsciiFile,
+                SelectedMessagesOnly = OnlySelectedMessagesEnabled && OnlySelectedMessages,
+                ConvertEBCDICHexStringToASCII = ConvertEBCDICHexStringToASCII
             };
             if (UseTransaction)
             {
@@ -134,6 +143,13 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             set { SetPropertyAndNotify(ref _useTransaction, value); }
         }
 
+        private bool _onlySelectedMessages;
+        public bool OnlySelectedMessages
+        {
+            get { return _onlySelectedMessages; }
+            set { SetPropertyAndNotify(ref _onlySelectedMessages, value); }
+        }
+
         private int? _transactionSize;
 
         [Range(1, 999999999)]
@@ -154,5 +170,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         }
         public int? CCSID { get; set; }
         public int? Encoding { get; set; }
+        public bool ConvertEBCDICHexStringToASCII { get; set; }
+
+
     }
 }

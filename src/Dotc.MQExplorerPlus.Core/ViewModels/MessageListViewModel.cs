@@ -27,6 +27,8 @@ using static System.FormattableString;
 using System.ComponentModel.DataAnnotations;
 using Nito.AsyncEx;
 using Dotc.Wpf.Controls.HexViewer;
+using System.Windows.Interop;
+using System.Text;
 
 namespace Dotc.MQExplorerPlus.Core.ViewModels
 {
@@ -317,7 +319,7 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
         {
             await Task.Yield();
             Queue.RefreshInfo();
-            App.OpenDumpCreationSettingsView(Queue, async (s, p) =>
+            App.OpenDumpCreationSettingsView(Queue, Messages.SelectedCount, async (s, p) =>
             {
                 await DumpQueueAsync(s, p);
             });
@@ -328,11 +330,24 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
 
             await ExecuteAsync((ct) =>
             {
-                using (var ps = Progress.Start(0, Queue.Depth ?? 0, ct, LongRunningState.Yes))
+
+                int messageCount = Queue.Depth ?? 0;
+
+
+                if (settings.SelectedMessagesOnly)
+                {
+                    var filters = GetSelectedMessages().Select(msg => new IdMatching(IdMatching.IdType.MessageId, msg.MessageId)).ToArray();
+                    messageCount = filters.Length;
+                    settings.IdFilters = filters;
+                }
+
+                using (var ps = Progress.Start(0, messageCount, ct, LongRunningState.Yes))
                 {
                     ps.SetTitle("Generating queue dump...");
 
-                    using (var context = new DumpCreationContext(filename, settings))
+                    Encoding ebcdicEncoding = Encoding.GetEncoding(App.UserSettings.EBCDICCodePage);
+
+                    using (var context = new DumpCreationContext(filename, settings, ebcdicEncoding))
                     {
                         Queue.QueueSource.DumpEngine.CreateDump(context, ps.CancellationToken, ps.Progress);
 
@@ -381,7 +396,9 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
                         ps.SetTitle("Loading dump...");
                         ps.SetRange(0, previewCount);
 
-                        using (var context = new DumpLoadContext(filename, settings))
+                        Encoding ebcdicEncoding = Encoding.GetEncoding(App.UserSettings.EBCDICCodePage);
+
+                        using (var context = new DumpLoadContext(filename, settings, ebcdicEncoding))
                         {
                             countMsgLoaded = Queue.QueueSource.DumpEngine.LoadDump(context, ps.CancellationToken, ps.Progress);
                         }

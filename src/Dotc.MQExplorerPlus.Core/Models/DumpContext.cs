@@ -14,16 +14,19 @@ namespace Dotc.MQExplorerPlus.Core.Models
 
     public sealed class DumpCreationContext : IDumpCreationContext
     {
-        public DumpCreationContext(string filename, DumpCreationSettings settings)
+        public DumpCreationContext(string filename, DumpCreationSettings settings, Encoding eBCDICEncoding)
         {
             if (string.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             Output = File.CreateText(filename);
+            EBCDICEncoding = eBCDICEncoding;
         }
         public DumpCreationSettings Settings { get; private set; }
 
         public StreamWriter Output { get; private set; }
+
+        public Encoding EBCDICEncoding { get; private set; }
 
         public void Dispose()
         {
@@ -34,16 +37,19 @@ namespace Dotc.MQExplorerPlus.Core.Models
     public sealed class DumpLoadContext : IDumpLoadContext
     {
 
-        public DumpLoadContext(string filename, DumpLoadSettings settings)
+        public DumpLoadContext(string filename, DumpLoadSettings settings, Encoding eBCDICEncoding)
         {
             if (string.IsNullOrEmpty(filename)) throw new ArgumentNullException(nameof(filename));
             Settings = settings ?? throw new ArgumentNullException(nameof(settings));
 
             Input = new StreamReader(filename);
+            EBCDICEncoding = eBCDICEncoding;
         }
         public DumpLoadSettings Settings { get; private set; }
 
         public StreamReader Input { get; private set; }
+
+        public Encoding EBCDICEncoding { get; private set; }
 
         public void Dispose()
         {

@@ -4,8 +4,9 @@
 // Licensed under the provided EULA. See EULA file in the solution root for full license information.  
 //
 #endregion
-using System.Configuration;
 using Dotc.MQExplorerPlus.Core.Models;
+using Newtonsoft.Json.Linq;
+using System.Configuration;
 
 namespace Dotc.MQExplorerPlus.Configuration
 {
@@ -23,5 +24,18 @@ namespace Dotc.MQExplorerPlus.Configuration
                 base["autoRefreshInterval"] = value;
             }
         }
+        [ConfigurationProperty("ebcdicCodePage", DefaultValue = UserSettings.DefaultEBCDICCodePage)]
+        public string EBCDICCodePage
+        {
+            get
+            {
+                return (string)base["ebcdicCodePage"];
+            }
+            set
+            {
+                    base["ebcdicCodePage"] = value;
+                }
+
+            }
     }
 }

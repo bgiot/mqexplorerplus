@@ -26,6 +26,8 @@ namespace Dotc.MQExplorerPlus.Core.Models
         int MaxRecentConnections { get; }
         ObservableCollection<RecentConnection> RecentConnections { get; }
 
+        string EBCDICCodePage { get; }
+
     }
 
 
@@ -40,6 +42,7 @@ namespace Dotc.MQExplorerPlus.Core.Models
         private string _channel;
         private int _maxRecentConnections;
         private ObservableCollection<RecentConnection> _recentConnections;
+        private string _EBCDICCodePage;
 
         public const int DefaultBrowseLimit = 500;
         public const bool DefaultBrowseMultiThread = false;
@@ -49,6 +52,7 @@ namespace Dotc.MQExplorerPlus.Core.Models
         public const int DefaultAutoRefreshInterval = 15;
         public const string DefaultQueueDepthWarningThreshold = "80%";
         public const int DefaultMaxRecentConnections = 10;
+        public const string DefaultEBCDICCodePage = "CP500";
 
 
         public UserSettings(ISettingsProvider provider)
@@ -67,7 +71,7 @@ namespace Dotc.MQExplorerPlus.Core.Models
             _channel = source.Channel;
             _queueDepthWarningThreshold = source.QueueDepthWarningThreshold;
             _maxRecentConnections = source.MaxRecentConnections;
-
+            _EBCDICCodePage = source.EBCDICCodePage;
         }
 
         private void Initialize()
@@ -84,6 +88,7 @@ namespace Dotc.MQExplorerPlus.Core.Models
                 _queueDepthWarningThreshold = configSource.QueueDepthWarningThreshold;
                 _maxRecentConnections = configSource.MaxRecentConnections;
                 _recentConnections = new ObservableCollection<RecentConnection>(configSource.RecentConnections);
+                _EBCDICCodePage = configSource.EBCDICCodePage;
             }
             else
             {
@@ -95,6 +100,7 @@ namespace Dotc.MQExplorerPlus.Core.Models
                 _queueDepthWarningThreshold = DefaultQueueDepthWarningThreshold;
                 _maxRecentConnections = DefaultMaxRecentConnections;
                 _recentConnections = new ObservableCollection<RecentConnection>();
+                _EBCDICCodePage = DefaultEBCDICCodePage;
             }
         }
 
@@ -166,6 +172,15 @@ namespace Dotc.MQExplorerPlus.Core.Models
         {
             get { return _maxRecentConnections; }
             set { SetPropertyAndNotify(ref _maxRecentConnections, value); }
+        }
+
+
+        [Required]
+        [DefaultValue(DefaultEBCDICCodePage)]
+        public string EBCDICCodePage
+        {
+            get { return _EBCDICCodePage; }
+            set { SetPropertyAndNotify(ref _EBCDICCodePage, value); }
         }
 
         public bool Save()

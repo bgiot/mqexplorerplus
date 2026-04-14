@@ -14,6 +14,7 @@ using System.Threading;
 using IBM.WMQ;
 using System.IO;
 using System.Collections;
+using static Dotc.MQ.ExtensionMethods;
 
 namespace Dotc.MQ.Websphere
 {
@@ -48,7 +49,7 @@ namespace Dotc.MQ.Websphere
 
                     MQMessage msg = null; // we simulate, so we don't need the mq message
 
-                    while (ReadFileMessage(dr, out msg, true))
+                    while (ReadFileMessage(dr, out msg, Encoding.Default, HexStringConversion.None, true))
                     {
                         messagesCount++;
                     }
@@ -79,28 +80,30 @@ namespace Dotc.MQ.Websphere
 
                 MQMessage message = null;
                 bool transactionOpened = false;
+                int filterIndex = 0;
+                IdMatching idFilter = null;
+                bool withFilter = context.Settings.IdFilters != null && context.Settings.IdFilters.Length > 0;
 
-                using (var reader = new MQReader(_qSource.NewConnectionCore(), context.Settings.UseTransaction, context.Settings.IdFilter, context.Settings.Converter))
+                using (var reader = new MQReader(_qSource.NewConnectionCore(), context.Settings.UseTransaction, context.Settings.Converter))
                 {
-                    var writer = new DumpWriter(context.Output, context.Settings, _qSource.QueueManager.Name, _qSource.Name, _culture, _encoding);
-                    while (reader.Read(ref message))
+                    var writer = new DumpWriter(context.Output, context.Settings, _qSource.QueueManager.Name, _qSource.Name, _culture, _encoding, context.EBCDICEncoding);
+
+                    while (true)
                     {
-                        if (ct.IsCancellationRequested)
-                            break;
-
-                        // TODO : Implement filter logic 
-                        bool addIt = true;
-
-
-                        if (addIt)
+                        idFilter = withFilter ? context.Settings.IdFilters[filterIndex++] : null;
+                        bool msgFound = reader.Read(ref message, idFilter);
+                        if (msgFound)
                         {
+                        
+                            if (ct.IsCancellationRequested)
+                            break;
 
                             writer.WriteMessage(message);
 
                             if (!context.Settings.LeaveMessages)
                             {
                                 // Force remove of the message
-                                if (reader.Read(ref message, true) && context.Settings.UseTransaction)
+                                if (reader.Remove(ref message) && context.Settings.UseTransaction)
                                     transactionOpened = true;
 
                                 if (context.Settings.UseTransaction && context.Settings.TransactionSize > 0 && writer.Counter % context.Settings.TransactionSize == 0)
@@ -111,10 +114,19 @@ namespace Dotc.MQ.Websphere
                                 }
                             }
 
+                            progress?.Report(writer.Counter);
+
+                            if (withFilter && filterIndex == context.Settings.IdFilters.Length)
+                                break;
+
                         }
-
-                        progress?.Report(writer.Counter);
-
+                        else
+                        {
+                            if (withFilter && filterIndex < context.Settings.IdFilters.Length)
+                                continue;
+                            else
+                                break;
+                        }
                     }
 
                     if (!context.Settings.LeaveMessages && context.Settings.UseTransaction && transactionOpened)
@@ -277,7 +289,9 @@ namespace Dotc.MQ.Websphere
 
                 MQMessage msg = null;
 
-                while (ReadFileMessage(dr, out msg))
+                HexStringConversion conversion = context.Settings.ConvertASCIIHexStringToEBCDIC ? HexStringConversion.ASCII_EBCDIC : HexStringConversion.None;
+
+                while (ReadFileMessage(dr, out msg, context.EBCDICEncoding, conversion))
                 {
                     messagesCount++;
                     ibmQ.Put(msg, mqPutMsgOpts);
@@ -316,7 +330,7 @@ namespace Dotc.MQ.Websphere
             }
         }
 
-        private bool ReadFileMessage(DumpReader reader, out MQMessage msg, bool simulate = false)
+        private bool ReadFileMessage(DumpReader reader, out MQMessage msg, Encoding ebcdicEncoding, HexStringConversion conversion, bool simulate = false)
         {
             msg = null;
 
@@ -345,7 +359,7 @@ namespace Dotc.MQ.Websphere
             while (reader.Line[0] == 'A')
             {
 
-                LoadMessageAttribute(reader, md);
+                LoadMessageAttribute(reader, md, ebcdicEncoding, conversion);
 
                 if (!reader.ReadLine(true, false))
                     throw new DumpException("Invalid end of file. Expected message data");
@@ -480,7 +494,7 @@ namespace Dotc.MQ.Websphere
             msg?.WriteString(reader.Line.Substring(start));
         }
 
-        private void LoadMessageAttribute(DumpReader reader, MQMessageDescriptor md)
+        private void LoadMessageAttribute(DumpReader reader, MQMessageDescriptor md, Encoding ebcdicEncoding, HexStringConversion conversion)
         {
             if (reader.Line.Length < 5)
                 throw new DumpException($"Invalid attribute line on line {reader.LineNo}");
@@ -531,147 +545,136 @@ namespace Dotc.MQ.Websphere
 
             var data = reader.Line.Substring(6);
 
-            try
+            if (md != null)
             {
-                switch (code)
-                {
-                    case "VER":
-                        var ver = int.Parse(data, _culture);
-                        if (md != null) md.Version = ver;
-                        break;
-                    case "RPT":
-                        var rpt = int.Parse(data, _culture);
-                        if (md != null) md.Report = rpt;
-                        break;
-                    case "MST":
-                        var mst = int.Parse(data, _culture);
-                        if (md != null) md.MsgType = mst;
-                        break;
-                    case "EXP":
-                        var exp = int.Parse(data, _culture);
-                        if (md != null) md.Expiry = exp;
-                        break;
-                    case "FDB":
-                        var fdb = int.Parse(data, _culture);
-                        if (md != null) md.Feedback = fdb;
-                        break;
-                    case "ENC":
-                        var enc = int.Parse(data, _culture);
-                        if (md != null) md.Encoding = enc;
-                        break;
-                    case "CCS":
-                        var v = int.Parse(data, _culture);
-                        if (md != null) md.Ccsid = v;
-                        break;
-                    case "FMT":
-                        var format = md != null ? md.Format : new byte[8];
-                        data.ToBytes(ref format, _encoding);
-                        if (md != null) md.Format = format;
-                        break;
-                    case "PRI":
-                        var pri = int.Parse(data, _culture);
-                        if (md != null) md.Priority = pri;
-                        break;
-                    case "PER":
-                        var per = int.Parse(data, _culture);
-                        if (md != null) md.Persistence = per;
-                        break;
-                    case "MSI":
-                        var msi = data.HexStringToBytes();
-                        if (md != null) md.MsgId = msi;
-                        break;
-                    case "COI":
-                        var coi = data.HexStringToBytes();
-                        if (md != null) md.CorrelId = coi;
-                        break;
-                    case "BOC":
-                        var boc = int.Parse(data, _culture);
-                        if (md != null) md.BackoutCount = boc;
-                        break;
-                    case "RTQ":
-                        var rtq = md != null ? md.ReplyToQueue : new byte[48];
-                        data.ToBytes(ref rtq, _encoding);
-                        if (md != null) md.ReplyToQueue = rtq;
-                        break;
-                    case "RTM":
-                        var rtm = md != null ? md.ReplyToQueue : new byte[48];
-                        data.ToBytes(ref rtm, _encoding);
-                        if (md != null) md.ReplyToQueueMgr = rtm;
-                        break;
-                    case "USR":
-                        var usr = md != null ? md.UserID : new byte[12];
-                        data.ToBytes(ref usr, _encoding);
-                        if (md != null) md.UserID = usr;
-                        break;
-                    case "ACC":
-                        var acc = data.HexStringToBytes();
-                        if (md != null) md.AccountingToken = acc;
-                        break;
-                    case "AID":
-                        var aid = md != null ? md.ApplIdentityData : new byte[3];
-                        data.ToBytes(ref aid, _encoding);
-                        if (md != null) md.ApplIdentityData = aid;
-                        break;
-                    case "AIX":
-                        var aix = data.HexStringToBytes();
-                        if (md != null) md.ApplIdentityData = aix;
-                        break;
-                    case "PAT":
-                        var pat = int.Parse(data, _culture);
-                        if (md != null) md.PutApplType = pat;
-                        break;
-                    case "PAN":
-                        var pan = md != null ? md.PutApplName : new byte[28];
-                        data.ToBytes(ref pan, _encoding);
-                        if (md != null) md.PutApplName = pan;
-                        break;
-                    case "PTD":
-                        var ptd = md != null ? md.PutDate : new byte[8];
-                        data.ToBytes(ref ptd, _encoding);
-                        if (md != null) md.PutDate = ptd;
-                        break;
-                    case "PTT":
-                        var ptt = md != null ? md.PutTime : new byte[8];
-                        data.ToBytes(ref ptt, _encoding);
-                        if (md != null) md.PutTime = ptt;
-                        break;
-                    case "AOD":
-                        var aod = md != null ? md.ApplOriginData : new byte[4];
-                        data.ToBytes(ref aod, _encoding);
-                        if (md != null) md.ApplOriginData = aod;
-                        break;
-                    case "AOX":
-                        var aox = data.HexStringToBytes();
-                        if (md != null) md.ApplOriginData = aox;
-                        break;
-                    case "GRP":
-                        var grp = data.HexStringToBytes();
-                        if (md != null) md.GroupID = grp;
-                        break;
-                    case "MSQ":
-                        var msq = int.Parse(data, _culture);
-                        if (md != null) md.MsgSequenceNumber = msq;
-                        break;
-                    case "OFF":
-                        var off = int.Parse(data, _culture);
-                        if (md != null) md.Offset = off;
-                        break;
-                    case "MSF":
-                        var msf = int.Parse(data, _culture);
-                        if (md != null) md.MsgFlags = msf;
-                        break;
-                    case "ORL":
-                        var orl = int.Parse(data, _culture);
-                        if (md != null) md.OriginalLength = orl;
-                        break;
 
+                try
+                {
+                    switch (code)
+                    {
+                        case "VER":
+                            md.Version = int.Parse(data, _culture);
+                            break;
+                        case "RPT":
+                            md.Report = int.Parse(data, _culture);
+                            break;
+                        case "MST":
+                            md.MsgType = int.Parse(data, _culture);
+                            break;
+                        case "EXP":
+                            md.Expiry = int.Parse(data, _culture);
+                            break;
+                        case "FDB":
+                            md.Feedback = int.Parse(data, _culture);
+                            break;
+                        case "ENC":
+                            md.Encoding = int.Parse(data, _culture);
+                            break;
+                        case "CCS":
+                            md.Ccsid = int.Parse(data, _culture);
+                            break;
+                        case "FMT":
+                            var format = new byte[8];
+                            data.ToBytes(ref format, _encoding);
+                            md.Format = format;
+                            break;
+                        case "PRI":
+                            md.Priority = int.Parse(data, _culture);
+                            break;
+                        case "PER":
+                            md.Persistence = int.Parse(data, _culture);
+                            break;
+                        case "MSI":
+                            md.MsgId = ConvertHexStringBytes(data, ebcdicEncoding, conversion);
+                            break;
+                        case "COI":
+                            md.CorrelId = ConvertHexStringBytes(data, ebcdicEncoding, conversion);
+                            break;
+                        case "BOC":
+                            md.BackoutCount = int.Parse(data, _culture);
+                            break;
+                        case "RTQ":
+                            var rtq = new byte[48];
+                            data.ToBytes(ref rtq, _encoding);
+                            md.ReplyToQueue = rtq;
+                            break;
+                        case "RTM":
+                            var rtm = new byte[48];
+                            data.ToBytes(ref rtm, _encoding);
+                            md.ReplyToQueueMgr = rtm;
+                            break;
+                        case "USR":
+                            var usr = new byte[12];
+                            data.ToBytes(ref usr, _encoding);
+                            md.UserID = usr;
+                            break;
+                        case "ACC":
+                            md.AccountingToken = data.HexStringToBytes();
+                            break;
+                        case "AID":
+                            var aid = new byte[3];
+                            data.ToBytes(ref aid, _encoding);
+                            md.ApplIdentityData = aid;
+                            break;
+                        case "AIX":
+                            md.ApplIdentityData = data.HexStringToBytes();
+                            break;
+                        case "PAT":
+                            md.PutApplType = int.Parse(data, _culture);
+                            break;
+                        case "PAN":
+                            var pan = new byte[28];
+                            data.ToBytes(ref pan, _encoding);
+                            md.PutApplName = pan;
+                            break;
+                        case "PTD":
+                            var ptd = new byte[8];
+                            data.ToBytes(ref ptd, _encoding);
+                            md.PutDate = ptd;
+                            break;
+                        case "PTT":
+                            var ptt = new byte[8];
+                            data.ToBytes(ref ptt, _encoding);
+                            md.PutTime = ptt;
+                            break;
+                        case "AOD":
+                            var aod = new byte[4];
+                            data.ToBytes(ref aod, _encoding);
+                            md.ApplOriginData = aod;
+                            break;
+                        case "AOX":
+                            md.ApplOriginData = data.HexStringToBytes();
+                            break;
+                        case "GRP":
+                            md.GroupID = ConvertHexStringBytes(data, ebcdicEncoding, conversion); 
+                            break;
+                        case "MSQ":
+                            md.MsgSequenceNumber = int.Parse(data, _culture);
+                            break;
+                        case "OFF":
+                            md.Offset = int.Parse(data, _culture);
+                            break;
+                        case "MSF":
+                            md.MsgFlags = int.Parse(data, _culture);
+                            break;
+                        case "ORL":
+                            md.OriginalLength = int.Parse(data, _culture);
+                            break;
+
+                    }
+                }
+                catch (Exception ex)
+                {
+                    throw new DumpException($"Invalid message attribute value on line {reader.LineNo}", ex);
                 }
             }
-            catch (Exception ex)
-            {
-                throw new DumpException($"Invalid message attribute value on line {reader.LineNo}", ex);
-            }
 
+        }
+
+        private byte[] ConvertHexStringBytes(string data, Encoding ebcdicEncoding, HexStringConversion conversion)
+        {
+            var dataAsBytes = data.HexStringToBytes();
+            return dataAsBytes.ConvertHexString(ebcdicEncoding, conversion);
         }
         #endregion
     }
@@ -717,13 +720,11 @@ namespace Dotc.MQ.Websphere
         private WsQueue _queue;
 
         internal bool UseTransaction { get; }
-        internal IdMatching IdFilter { get; }
         internal Conversion Converter { get; }
 
-        internal MQReader(WsQueue queue, bool useTransaction, IdMatching filter, Conversion converter)
+        internal MQReader(WsQueue queue, bool useTransaction, Conversion converter)
         {
             _queue = queue;
-            IdFilter = filter;
             Converter = converter;
             UseTransaction = useTransaction;
             var oqm = OpenQueueMode.ForBrowseAndRead;
@@ -737,7 +738,39 @@ namespace Dotc.MQ.Websphere
 
         public int CurrentIndex { get; private set; }
 
-        internal bool Read(ref MQMessage msg, bool force = false)
+        internal bool Remove(ref MQMessage msg)
+        {
+            var gmo = new MQGetMessageOptions()
+            {
+                Options = MQC.MQGMO_NO_WAIT + MQC.MQGMO_PROPERTIES_AS_Q_DEF,
+                Version = 1,
+                MatchOptions = MQC.MQMO_MATCH_MSG_ID + MQC.MQMO_MATCH_CORREL_ID,
+                GroupStatus = MQC.MQGS_NOT_IN_GROUP,
+                SegmentStatus = MQC.MQSS_NOT_A_SEGMENT,
+                Segmentation = MQC.MQSEG_INHIBITED,
+            };
+            gmo.Options |= MQC.MQGMO_MSG_UNDER_CURSOR;
+            if (UseTransaction)
+                gmo.Options |= MQC.MQGMO_SYNCPOINT;
+            else gmo.Options |= MQC.MQGMO_NO_SYNCPOINT;
+
+            try
+            {
+                _IbmQueue.Get(msg, gmo);
+                return true;
+            }
+            catch (MQException exc)
+            {
+                if (exc.ReasonCode == MQC.MQRC_NO_MSG_AVAILABLE
+                    || exc.ReasonCode == MQC.MQRC_NOT_CONVERTED)
+                {
+                    return false;
+                }
+                throw;
+            }
+        }
+
+        internal bool Read(ref MQMessage msg, IdMatching filter )
         {
             var gmo = new MQGetMessageOptions()
             {
@@ -749,47 +782,36 @@ namespace Dotc.MQ.Websphere
                 Segmentation = MQC.MQSEG_INHIBITED,
             };
 
-            if (force)
+            gmo.Options |= MQC.MQGMO_BROWSE_NEXT | MQC.MQGMO_NO_SYNCPOINT;
+
+            msg = new MQMessage();
+
+            if (filter != null)
             {
-                gmo.Options |= MQC.MQGMO_MSG_UNDER_CURSOR;
-                if (UseTransaction)
-                    gmo.Options |= MQC.MQGMO_SYNCPOINT;
-                else gmo.Options |= MQC.MQGMO_NO_SYNCPOINT;
+                if (filter.Type == IdMatching.IdType.MessageId)
+                {
+                    msg.MessageId = filter.Value;
+                }
+                if (filter.Type == IdMatching.IdType.CorrelationId)
+                {
+                    msg.CorrelationId = filter.Value;
+                }
+                if (filter.Type == IdMatching.IdType.GroupId)
+                {
+                    msg.GroupId = filter.Value;
+                    gmo.MatchOptions |= MQC.MQMO_MATCH_GROUP_ID;
+                    if (gmo.Version < 2) gmo.Version = 2;
+                }
             }
-            else
+
+            if (Converter != null)
             {
-
-                gmo.Options |= MQC.MQGMO_BROWSE_NEXT | MQC.MQGMO_NO_SYNCPOINT;
-
-                msg = new MQMessage();
-
-                if (IdFilter != null)
-                {
-                    if (IdFilter.Type == IdMatching.IdType.MessageId)
-                    {
-                        msg.MessageId = IdFilter.Value;
-                    }
-                    if (IdFilter.Type == IdMatching.IdType.CorrelationId)
-                    {
-                        msg.CorrelationId = IdFilter.Value;
-                    }
-                    if (IdFilter.Type == IdMatching.IdType.GroupId)
-                    {
-                        msg.GroupId = IdFilter.Value;
-                        gmo.MatchOptions |= MQC.MQMO_MATCH_GROUP_ID;
-                        if (gmo.Version < 2) gmo.Version = 2;
-                    }
-                }
-
-                if (Converter != null)
-                {
-                    gmo.Options |= MQC.MQGMO_CONVERT;
-                    msg.Encoding = Converter.Encoding;
-                    msg.CharacterSet = Converter.CodedCharSetId;
-                }
-
-                CurrentIndex++;
+                gmo.Options |= MQC.MQGMO_CONVERT;
+                msg.Encoding = Converter.Encoding;
+                msg.CharacterSet = Converter.CodedCharSetId;
             }
+
+            CurrentIndex++;
 
             try
             {
@@ -817,14 +839,16 @@ namespace Dotc.MQ.Websphere
     {
         private readonly CultureInfo _culture;
         private readonly Encoding _encoding;
+        private readonly Encoding _ebcdicEncoding;
 
         private StreamWriter _sw;
         private DumpCreationSettings _settings;
 
-        internal DumpWriter(StreamWriter output, DumpCreationSettings settings, string qmName, string qName, CultureInfo ci, Encoding encoding)
+        internal DumpWriter(StreamWriter output, DumpCreationSettings settings, string qmName, string qName, CultureInfo ci, Encoding encoding, Encoding ebcdicEncoding)
         {
             _culture = ci;
             _encoding = encoding;
+            _ebcdicEncoding = ebcdicEncoding;
             _settings = settings;
             _sw = output;
 
@@ -1006,6 +1030,22 @@ namespace Dotc.MQ.Websphere
             }
         }
 
+        private string ToHexStringConverted(byte[] data)
+        {
+            return data.ToHexString(
+                ebcdicEncoding: _ebcdicEncoding, 
+                conversion: _settings.ConvertEBCDICHexStringToASCII ? HexStringConversion.EBCDIC_ASCII : HexStringConversion.None
+                );
+        }
+
+        private string ToHexStringNotConverted(byte[] data)
+        {
+            return data.ToHexString(
+                ebcdicEncoding: _ebcdicEncoding,
+                conversion: HexStringConversion.None
+                );
+        }
+
         private void WriteMessageDescriptor(MQMessageDescriptor md)
         {
             var ver = md.Version > 2 ? md.Version : 2;
@@ -1019,20 +1059,20 @@ namespace Dotc.MQ.Websphere
             _sw.WriteLine("A FMT {0}", md.Format.ToString(_encoding));
             _sw.WriteLine("A PRI {0}", md.Priority.ToString(_culture));
             _sw.WriteLine("A PER {0}", md.Persistence.ToString(_culture));
-            _sw.WriteLine("A MSI {0}", md.MsgId.ToHexString());
-            _sw.WriteLine("A COI {0}", md.CorrelId.ToHexString());
+            _sw.WriteLine("A MSI {0}", ToHexStringConverted(md.MsgId));
+            _sw.WriteLine("A COI {0}", ToHexStringConverted(md.CorrelId));
             _sw.WriteLine("A BOC {0}", md.BackoutCount.ToString(_culture));
             _sw.WriteLine("A RTQ {0}", md.ReplyToQueue.ToString(_encoding));
             _sw.WriteLine("A RTM {0}", md.ReplyToQueueMgr.ToString(_encoding));
             _sw.WriteLine("A USR {0}", md.UserID.ToString(_encoding));
-            _sw.WriteLine("A ACC {0}", md.AccountingToken.ToHexString());
-            _sw.WriteLine("A AIX {0}", md.ApplIdentityData.ToHexString());
+            _sw.WriteLine("A ACC {0}", ToHexStringNotConverted(md.AccountingToken));
+            _sw.WriteLine("A AIX {0}", ToHexStringNotConverted(md.ApplIdentityData));
             _sw.WriteLine("A PAT {0}", md.PutApplType.ToString(_culture));
             _sw.WriteLine("A PAN {0}", md.PutApplName.ToString(_encoding));
             _sw.WriteLine("A PTD {0}", md.PutDate.ToString(_encoding));
             _sw.WriteLine("A PTT {0}", md.PutTime.ToString(_encoding));
-            _sw.WriteLine("A AOX {0}", md.ApplOriginData.ToHexString());
-            _sw.WriteLine("A GRP {0}", md.GroupID.ToHexString());
+            _sw.WriteLine("A AOX {0}", ToHexStringNotConverted(md.ApplOriginData));
+            _sw.WriteLine("A GRP {0}", ToHexStringConverted(md.GroupID));
             _sw.WriteLine("A MSQ {0}", md.MsgSequenceNumber.ToString(_culture));
             _sw.WriteLine("A OFF {0}", md.Offset.ToString(_culture));
             _sw.WriteLine("A MSF {0}", md.MsgFlags.ToString(_culture));

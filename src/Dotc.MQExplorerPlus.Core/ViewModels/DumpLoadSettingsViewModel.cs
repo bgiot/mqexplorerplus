@@ -84,7 +84,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             {
                 Context = SelectedContext,
                 UseTransaction = UseTransaction,
-                TransactionSize = TransactionSize.HasValue ? TransactionSize.Value : 100
+                TransactionSize = TransactionSize.HasValue ? TransactionSize.Value : 100,
+                ConvertASCIIHexStringToEBCDIC = ConvertASCIIHexStringToEBCDIC
             };
         }
 
@@ -117,6 +118,8 @@ namespace Dotc.MQExplorerPlus.Core.ViewModels
             get { return _transactionSize; }
             set { SetPropertyAndNotify(ref _transactionSize, value); }
         }
+
+        public bool ConvertASCIIHexStringToEBCDIC { get; set; }
         private void CheckDumpIsValid()
         {
             DumpIsValid = false;

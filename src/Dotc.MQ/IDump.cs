@@ -7,6 +7,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Text;
 using System.Threading;
 
 namespace Dotc.MQ
@@ -56,15 +57,17 @@ namespace Dotc.MQ
             WriteMessageDescriptor = true;
             TransactionSize = 100;
             DataWidth = 25;
+            ConvertEBCDICHexStringToASCII = false;
         }
 
-        public IdMatching IdFilter { get; set; }
+        public IdMatching[] IdFilters { get; set; }
         public bool LeaveMessages { get; set; }
         public bool WriteHeader { get; set; }
         public bool WriteMessageIndex { get; set; }
         public bool WriteMessageDescriptor { get; set; }
         public bool UseTransaction { get; set; }
         public int TransactionSize { get; set; }
+        public bool SelectedMessagesOnly {get;set;}
 
         public Conversion Converter { get; set; }
 
@@ -72,6 +75,7 @@ namespace Dotc.MQ
         public bool AddAsciiColumn { get; set; }
 
         public bool AsciiFile { get; set; }
+        public bool ConvertEBCDICHexStringToASCII { get; set; }
     }
 
     public sealed class DumpLoadSettings
@@ -96,19 +100,21 @@ namespace Dotc.MQ
         public bool UseTransaction { get; set; }
 
         public int TransactionSize { get; set; }
-
+        public bool ConvertASCIIHexStringToEBCDIC { get; set; }
     }
 
     public interface IDumpCreationContext : IDisposable
     {
         DumpCreationSettings Settings { get; }
         StreamWriter Output { get; }
+        Encoding EBCDICEncoding { get; }
     }
 
     public interface IDumpLoadContext : IDisposable
     {
         DumpLoadSettings Settings { get; }
         StreamReader Input { get; }
+        Encoding EBCDICEncoding { get; }
     }
 
     public class CsvExportSettings
